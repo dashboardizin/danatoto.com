@@ -72,19 +72,17 @@
         
         <aside class="w-64 bg-luxury-dark border-r border-slate-800 flex flex-col justify-between">
             <div>
-                <div class="p-6 border-b border-slate-800/60 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm" id="sidebar-avatar-initial">G</div>
-                    <div>
-                        <h1 class="text-sm font-bold text-white tracking-wide uppercase">DASHBOARD IZIN</h1>
-                        <span id="role-badge" class="text-[10px] text-slate-400">Loading...</span>
+                <div class="p-6 border-b border-slate-800/60 flex items-center justify-center">
+                    <div id="sidebar-logo-container" class="w-full flex items-center justify-center py-2">
+                        <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-lg shadow-md" id="sidebar-avatar-initial">D</div>
                     </div>
                 </div>
 
                 <nav class="p-4 space-y-1">
-                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
+                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
                         <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD MONITOR
                     </button>
-                    <button onclick="switchTab('izin')" id="btn-nav-izin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
+                    <button onclick="switchTab('izin')" id="btn-nav-izin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
                         <i class="fa-solid fa-square-plus w-5 text-center"></i> IZIN KELUAR
                     </button>
                     <button onclick="switchTab('report')" id="btn-nav-report" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
@@ -110,14 +108,14 @@
             
             <header class="h-16 border-b border-slate-800 bg-luxury-dark/50 backdrop-blur px-8 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-slate-400">
-                    Sistem / <span id="breadcrumb-child" class="text-white font-medium">IZIN KELUAR</span>
+                    Sistem / <span id="breadcrumb-child" class="text-white font-medium">DASHBOARD</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span id="user-greeting" class="text-sm font-semibold text-sky-400 text-glow-blue">Halo...</span>
+                    <span id="user-greeting" class="text-sm font-semibold text-sky-400 text-glow-blue hidden">Halo...</span>
                     <span class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50" id="current-time-display">Loading Date...</span>
                     
                     <div class="flex items-center gap-2 bg-slate-900/60 p-1 pr-3 rounded-full border border-slate-800">
-                        <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">G</div>
+                        <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">D</div>
                         <button onclick="handleLogout()" title="Keluar dari Sistem" class="text-slate-400 hover:text-red-400 transition pl-1">
                             <i class="fa-solid fa-power-off text-sm"></i>
                         </button>
@@ -127,8 +125,7 @@
 
             <div class="flex-1 p-8 overflow-y-auto space-y-6">
 
-                <section id="tab-izin" class="max-w-4xl mx-auto space-y-6">
-                    
+                <section id="tab-dashboard" class="space-y-6">
                     <div class="bg-luxury-dark/40 border border-slate-800/80 rounded-2xl p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -144,11 +141,29 @@
                         </div>
                     </div>
 
+                    <div class="bg-luxury-dark border border-slate-800 rounded-2xl overflow-hidden">
+                        <div class="p-6 border-b border-slate-800"><h4 class="text-base font-bold text-white tracking-wide">Tabel Kontrol Aktivitas Hari Ini</h4></div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900/40 text-slate-400 text-xs font-semibold uppercase border-b border-slate-800">
+                                        <th class="px-6 py-4">Nama Personil</th>
+                                        <th class="px-6 py-4">Jobdesk</th>
+                                        <th class="px-6 py-4">Jam Keluar</th>
+                                        <th class="px-6 py-4">Sisa Waktu Hitung Mundur</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monitor-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="tab-izin" class="hidden max-w-4xl mx-auto space-y-6">
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-8 max-w-xl mx-auto space-y-6 box-glow-blue">
                         <div class="text-center border-b border-slate-800 pb-4">
-                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1"><i class="fa-regular fa-clock mr-1"></i> Waktu Sekarang</div>
-                            <div id="live-large-clock" class="text-3xl font-mono font-bold text-sky-400 text-glow-blue tracking-wider mb-4">00:00:00</div>
-                            <h3 class="text-base font-bold text-white tracking-wide">Formulir Pengajuan Izin Keluar</h3>
+                            <h3 class="text-base font-bold text-white tracking-wide uppercase mb-1">Formulir Pengajuan Izin Keluar</h3>
+                            <p class="text-xs text-slate-400">Sistem otomatis menghitung mundur waktu 15 Menit.</p>
                         </div>
                         
                         <div class="space-y-4">
@@ -162,6 +177,7 @@
                             </div>
                             <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-3.5 text-xs space-y-1 text-slate-400 font-medium">
                                 <div class="flex justify-between"><span>Standar Alokasi Batas Waktu:</span><span class="text-amber-400 font-bold">15 Menit Mundur</span></div>
+                                <div class="text-[11px] text-red-400 pt-1 border-t border-slate-800/60 mt-1">Lewat waktu otomatis tercatat sebagai Pelanggaran Telat (Doc)</div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 pt-2">
@@ -172,25 +188,6 @@
                                     <i class="fa-solid fa-hourglass-end text-xs"></i> End Time
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="tab-dashboard" class="hidden space-y-6">
-                    <div class="bg-luxury-dark border border-slate-800 rounded-2xl overflow-hidden">
-                        <div class="p-6 border-b border-slate-800"><h4 class="text-base font-bold text-white tracking-wide">Tabel Kontrol Aktivitas Hari Ini</h4></div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-900/40 text-slate-400 text-xs font-semibold uppercase border-b border-slate-800">
-                                        <th class="px-6 py-4">Nama Personil</th>
-                                        <th class="px-6 py-4">Jobdesk</th>
-                                        <th class="px-6 py-4">Jam Keluar</th>
-                                        <th class="px-6 py-4">Status Waktu</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="monitor-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
-                            </table>
                         </div>
                     </div>
                 </section>
@@ -329,15 +326,16 @@
             
             const initial = currentUserSession.fullname.charAt(0).toUpperCase();
             document.getElementById('avatar-initial').innerText = initial;
-            document.getElementById('sidebar-avatar-initial').innerText = initial;
-            document.getElementById('user-greeting').innerText = `Halo, ${currentUserSession.fullname}!`;
+            if(document.getElementById('sidebar-avatar-initial')) {
+                document.getElementById('sidebar-avatar-initial').innerText = initial;
+            }
+
+            // Atur nama di formulir izin
+            document.getElementById('form-staff-name').value = currentUserSession.fullname;
 
             const isGana = currentUserSession.username === 'gana';
-            document.getElementById('role-badge').innerText = isGana ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
-
             const settingsBtn = document.getElementById('btn-nav-settings');
             const adminDiv = document.getElementById('admin-divider');
-            document.getElementById('form-staff-name').value = currentUserSession.fullname;
 
             if (isGana) {
                 if(settingsBtn) settingsBtn.classList.remove('hidden');
@@ -351,6 +349,9 @@
             renderLiveQueueAndMonitors();
             renderReportTable();
             startSystemEngine();
+            
+            // Panggil switchTab ke 'dashboard' di awal untuk memicu logika sapaan muncul pertama kali
+            switchTab('dashboard');
         }
 
         function handleLogout() {
@@ -360,44 +361,53 @@
             location.reload();
         }
 
+        // 🎯 LOGIKA SWITCH TAB DAN DISPLAY SAPAAN USER (SANGAT PRESISI)
         function switchTab(target) {
             if (target === 'settings' && currentUserSession.username !== 'gana') { return; }
+            
             const tabs = ['dashboard', 'izin', 'report', 'settings'];
             tabs.forEach(t => {
                 if (document.getElementById(`tab-${t}`)) document.getElementById(`tab-${t}`).classList.add('hidden');
                 if (document.getElementById(`btn-nav-${t}`)) document.getElementById(`btn-nav-${t}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40";
             });
+            
+            // Tampilkan tab target
             document.getElementById(`tab-${target}`).classList.remove('hidden');
             if(document.getElementById(`btn-nav-${target}`)) document.getElementById(`btn-nav-${target}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10";
+            
+            // Atur text breadcrumb child
             document.getElementById('breadcrumb-child').innerText = target.toUpperCase() === 'REPORT' ? 'TELAT DOC IZIN' : target.toUpperCase() === 'IZIN' ? 'IZIN KELUAR' : target.toUpperCase();
+
+            // 🔥 LOGIKA KUNCI ELEMEN HI/HALO USER SKRG:
+            const greeting = document.getElementById('user-greeting');
+            if (target === 'dashboard') {
+                greeting.innerText = `Halo, ${currentUserSession.fullname}! Selamat Bekerja.`;
+                greeting.classList.remove('hidden'); // Munculkan saat di menu Dashboard Monitor
+            } else {
+                greeting.classList.add('hidden');    // Sembunyikan total saat klik menu lain
+            }
         }
 
         function startSystemEngine() {
             if(systemClockInterval) clearInterval(systemClockInterval);
             systemClockInterval = setInterval(() => {
-                let skrg = new Date();
-                document.getElementById('live-large-clock').innerText = 
-                    `${String(skrg.getHours()).padStart(2, '0')}:${String(skrg.getMinutes()).padStart(2, '0')}:${String(skrg.getSeconds()).padStart(2, '0')}`;
-
-                let statusUpdated = false;
                 activePermits.forEach(p => {
                     if (p.status === 'Berjalan') {
                         p.sisaDetik--;
-                        if (p.sisaDetik <= 0) { p.status = 'Terlambat'; p.sisaDetik = 0; statusUpdated = true; }
+                        if (p.sisaDetik <= 0) { 
+                            p.status = 'Terlambat'; 
+                            p.sisaDetik = 0; 
+                        }
                     } else if (p.status === 'Terlambat') {
                         p.totalWaktuTelatDetik++;
-                        statusUpdated = true;
                     }
                 });
 
-                if (statusUpdated || activePermits.length > 0) {
-                    setStorage('db_active_permits', activePermits);
-                    renderLiveQueueAndMonitors();
-                }
+                setStorage('db_active_permits', activePermits);
+                renderLiveQueueAndMonitors();
             }, 1000);
         }
 
-        // 🟢 TOMBOL START TIME DIKLIK
         function triggerStartTime() {
             const namaSelected = document.getElementById('form-staff-name').value;
             const jobSelected = document.getElementById('form-select-job').value;
@@ -418,16 +428,16 @@
                 nama: namaSelected,
                 jobdesk: jobSelected,
                 jamKeluar: jamStr,
-                sisaDetik: 900, // Mulai dari 15 Menit penuh
+                sisaDetik: 900, // Mulai hitung mundur otomatis dari 15:00 Menit kebawah
                 totalWaktuTelatDetik: 0,
                 status: 'Berjalan'
             });
 
             setStorage('db_active_permits', activePermits);
             renderLiveQueueAndMonitors();
+            switchTab('dashboard'); // Pindahkan fokus ke monitor dashboard setelah start
         }
 
-        // 🔴 TOMBOL END TIME DIKLIK -> MEMATIKAN & MENGHAPUS DATA
         function triggerEndTime() {
             const namaSelected = document.getElementById('form-staff-name').value;
             const index = activePermits.findIndex(p => p.nama === namaSelected);
@@ -437,7 +447,6 @@
             }
 
             const p = activePermits[index];
-            // Jika dia pulangnya telat, datanya kita simpan ke Laporan Telat sebelum dihapus total
             if (p.status === 'Terlambat') {
                 const m = Math.floor(p.totalWaktuTelatDetik / 60);
                 const s = p.totalWaktuTelatDetik % 60;
@@ -448,15 +457,14 @@
                 renderReportTable();
             }
             
-            // HAPUS TOTAL DARI TAMPILAN MONITOR ATAS (GA MUNCUL LAGI)
             activePermits.splice(index, 1);
             setStorage('db_active_permits', activePermits);
-            document.getElementById('form-select-job').selectedIndex = 0; // Reset Pilihan Jobdesk
+            document.getElementById('form-select-job').selectedIndex = 0; 
             renderLiveQueueAndMonitors();
             alert('Waktu keluar berhasil dihentikan. Data antrean dibersihkan!');
+            switchTab('dashboard');
         }
 
-        // RENDER TAMPILAN MONITOR ATAS
         function renderLiveQueueAndMonitors() {
             const container = document.getElementById('live-queue-container');
             const tbody = document.getElementById('monitor-table-body');
