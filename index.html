@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Permission Control Dashboard</title>
-    <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -28,14 +26,17 @@
 </head>
 <body class="h-screen overflow-hidden">
 
-    <!-- ================= 1. LOGIN SCREEN ================= -->
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#030712] px-4">
         <div class="bg-luxury-dark border border-slate-800 p-8 rounded-2xl w-full max-w-md box-glow-blue text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sky-500/10 text-sky-400 mb-4 border border-sky-500/20">
                 <i class="fa-solid fa-shield-halved text-2xl"></i>
             </div>
             <h2 class="text-2xl font-bold text-white text-glow-blue tracking-wide">SYSTEM LOGIN</h2>
-            <p class="text-slate-400 text-sm mt-1 mb-6">Gunakan akun Admin untuk akses menu kontrol penuh</p>
+            <p class="text-slate-400 text-sm mt-1 mb-2">Silakan masuk menggunakan kredensial Anda</p>
+            
+            <div class="text-[11px] text-amber-500 bg-amber-500/5 border border-amber-500/10 rounded-lg p-2 mb-6 font-mono">
+                <i class="fa-solid fa-network-wired mr-1"></i> IP Terdeteksi: <span id="detected-ip">192.168.1.100</span>
+            </div>
             
             <form id="login-form" onsubmit="handleLogin(event)" class="text-left space-y-4">
                 <div>
@@ -53,17 +54,15 @@
         </div>
     </div>
 
-    <!-- ================= MAIN CORE LAYOUT ================= -->
     <div id="main-layout" class="hidden h-full flex">
         
-        <!-- ================= 2. SIDEBAR MENU ================= -->
         <aside class="w-64 bg-luxury-dark border-r border-slate-800 flex flex-col justify-between">
             <div>
                 <div class="p-6 border-b border-slate-800/60 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm">DI</div>
                     <div>
                         <h1 class="text-sm font-bold text-white tracking-wide uppercase">Dashboard Izin</h1>
-                        <span class="text-[10px] id="role-badge" class="text-slate-400">Loading...</span>
+                        <span id="role-badge" class="text-[10px] text-slate-400">Loading...</span>
                     </div>
                 </div>
 
@@ -75,7 +74,6 @@
                         <i class="fa-solid fa-square-plus w-5 text-center"></i> Buat Izin Baru
                     </button>
                     
-                    <!-- Pembatas Menu Admin -->
                     <div class="pt-4 pb-1 px-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-t border-slate-800/60 mt-4">Admin Area Only</div>
                     
                     <button onclick="switchTab('report')" id="btn-nav-report" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/40">
@@ -94,32 +92,23 @@
             </div>
         </aside>
 
-        <!-- ================= MAIN CONTENT SPACE ================= -->
         <main class="flex-1 flex flex-col bg-[#030712] overflow-hidden">
             <header class="h-16 border-b border-slate-800 bg-luxury-dark/50 backdrop-blur px-8 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-slate-400">
                     Sistem / <span id="breadcrumb-child" class="text-white font-medium">Main Dashboard</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50" id="current-time-display">Kamis, 28 Mei 2026</span>
+                    <span class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50" id="current-time-display">Loading Date...</span>
                     <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">A</div>
                 </div>
             </header>
 
             <div class="flex-1 p-8 overflow-y-auto">
 
-                <!-- TAB 1: MAIN DASHBOARD -->
                 <section id="tab-dashboard" class="space-y-6">
-                    <!-- Monitor Izin Berjalan -->
-                    <div id="active-timers-wrapper" class="space-y-4">
-                        <!-- Box timer aktif muncul dinamis di sini -->
-                    </div>
-
-                    <!-- Log Monitor Real-time -->
+                    <div id="active-timers-wrapper" class="space-y-4"></div>
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl overflow-hidden">
-                        <div class="p-6 border-b border-slate-800">
-                            <h4 class="text-base font-bold text-white tracking-wide">Aktivitas Monitor Izin Hari Ini</h4>
-                        </div>
+                        <div class="p-6 border-b border-slate-800"><h4 class="text-base font-bold text-white tracking-wide">Aktivitas Monitor Izin Hari Ini</h4></div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
@@ -132,104 +121,110 @@
                                         <th class="px-6 py-4">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="monitor-table-body" class="text-sm divide-y divide-slate-800/50">
-                                    <!-- Terisi Otomatis -->
-                                </tbody>
+                                <tbody id="monitor-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
                             </table>
                         </div>
                     </div>
                 </section>
 
-                <!-- TAB 2: FORM BUAT IZIN BARU -->
                 <section id="tab-izin" class="hidden max-w-xl mx-auto bg-luxury-dark border border-slate-800 rounded-2xl p-8 space-y-6">
                     <div class="border-b border-slate-800 pb-4">
                         <h3 class="text-lg font-bold text-white tracking-wide text-center">Formulir Pengajuan Izin Keluar</h3>
                         <p class="text-xs text-slate-400 text-center mt-1">Sistem otomatis menghitung mundur waktu 15 Menit.</p>
                     </div>
-
+                    <div class="bg-[#060b14] border border-slate-800 rounded-xl p-4 text-center">
+                        <span class="block text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1"><i class="fa-regular fa-clock mr-1"></i> WAKTU SEKARANG (REAL-TIME)</span>
+                        <div id="live-form-clock" class="text-3xl font-mono font-bold text-sky-400 text-glow-blue tracking-wider">00:00:00</div>
+                    </div>
                     <form onsubmit="startIzinTimer(event)" class="space-y-5">
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Nama Karyawan</label>
-                            <select id="form-select-name" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition">
-                                <!-- Diambil dari pengaturan -->
-                            </select>
+                            <select id="form-select-name" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition"></select>
                         </div>
-
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Jobdesk Kerja</label>
-                            <select id="form-select-job" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition">
-                                <!-- Diambil dari pengaturan -->
-                            </select>
+                            <select id="form-select-job" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition"></select>
                         </div>
-
                         <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-xs space-y-1 text-slate-400">
                             <div class="flex justify-between"><span>Standar Durasi:</span><span class="text-amber-400 font-bold">15 Menit</span></div>
-                            <div class="flex justify-between"><span>Konsekuensi Sistem:</span><span class="text-red-400 font-medium">Lewat waktu otomatis tercatat sebagai Pelanggaran Telat (Doc)</span></div>
                         </div>
-
-                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-semibold py-3 rounded-xl transition shadow-lg">
-                            Ajukan Izin & Mulai Timer
-                        </button>
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-semibold py-3 rounded-xl transition shadow-lg">Ajukan Izin & Mulai Timer</button>
                     </form>
                 </section>
 
-                <!-- TAB 3: LAPORAN KHUSUS KETERLAMBATAN -->
                 <section id="tab-report" class="hidden space-y-6">
                     <div class="bg-luxury-dark border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h3 class="text-lg font-bold text-white tracking-wide"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i>Log Data Overtime (Doc Telat Karyawan)</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Daftar personil yang kembali melebihi batas ketentuan 15 menit.</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">Filter Tanggal:</span>
                             <input type="date" id="filter-date-input" onchange="filterReportByDate()" class="bg-[#060b14] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500">
                             <button onclick="clearDateFilter()" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 px-3 py-1.5 rounded-lg">Clear</button>
                         </div>
                     </div>
-
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl overflow-hidden">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-red-950/20 text-red-400 text-xs font-semibold uppercase border-b border-slate-800">
-                                    <th class="px-6 py-4">Tanggal / Hari</th>
+                                    <th class="px-6 py-4">Tanggal</th>
                                     <th class="px-6 py-4">Nama Personil</th>
                                     <th class="px-6 py-4">Jobdesk</th>
                                     <th class="px-6 py-4">Jam Mulai Keluar</th>
-                                    <th class="px-6 py-4 class="text-center"">Total Durasi Terlambat</th>
-                                    <th class="px-6 py-4">Keterangan Dokumen</th>
+                                    <th class="px-6 py-4 text-center">Total Durasi Terlambat</th>
+                                    <th class="px-6 py-4">Keterangan</th>
                                 </tr>
                             </thead>
-                            <tbody id="report-table-body" class="text-sm divide-y divide-slate-800/50">
-                                <!-- Terisi Otomatis Data Pelanggar -->
-                            </tbody>
+                            <tbody id="report-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
                         </table>
                     </div>
                 </section>
 
-                <!-- TAB 4: MANAGEMENT SETTINGS (INPUT DATA MASTER) -->
-                <section id="tab-settings" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Kelola Data Karyawan -->
+                <section id="tab-settings" class="hidden space-y-8">
+                    
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
-                        <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-sky-400"><i class="fa-solid fa-user-gear mr-2"></i>Kelola Daftar Nama Karyawan</h4>
-                        <form onsubmit="addKaryawanMaster(event)" class="flex gap-2">
-                            <input type="text" id="input-master-name" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="Ketik Nama Karyawan Baru...">
-                            <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-4 rounded-xl text-xs font-semibold">Tambah</button>
+                        <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-emerald-400">
+                            <i class="fa-solid fa-user-shield mr-2"></i>Otoritas & Registrasi Akun Login Staff
+                        </h4>
+                        <form onsubmit="addStaffAccount(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-[#060b14] p-4 rounded-xl border border-slate-800">
+                            <input type="text" id="reg-staff-user" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Username Staff...">
+                            <input type="text" id="reg-staff-pass" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Password Staff...">
+                            <input type="text" id="reg-staff-ip" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="IP Login (Contoh: 192.168.1.100)">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl py-2 transition">Buat Akun Staff</button>
                         </form>
-                        <ul id="list-master-names" class="text-xs divide-y divide-slate-800/60 max-h-60 overflow-y-auto">
-                            <!-- List Nama -->
-                        </ul>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="text-slate-400 border-b border-slate-800">
+                                        <th class="py-2">Username</th>
+                                        <th class="py-2">Password</th>
+                                        <th class="py-2">Otoritas IP Address</th>
+                                        <th class="py-2 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-staff-accounts" class="divide-y divide-slate-800/40 text-slate-300">
+                                    </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <!-- Kelola Data Jobdesk -->
-                    <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
-                        <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-purple-400"><i class="fa-solid fa-briefcase mr-2"></i>Kelola Pilihan Jobdesk</h4>
-                        <form onsubmit="addJobdeskMaster(event)" class="flex gap-2">
-                            <input type="text" id="input-master-job" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500" placeholder="Ketik Nama Jobdesk Baru...">
-                            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl text-xs font-semibold">Tambah</button>
-                        </form>
-                        <ul id="list-master-jobs" class="text-xs divide-y divide-slate-800/60 max-h-60 overflow-y-auto">
-                            <!-- List Jobdesk -->
-                        </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
+                            <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-sky-400"><i class="fa-solid fa-user-gear mr-2"></i>Daftar Pilihan Nama Karyawan</h4>
+                            <form onsubmit="addKaryawanMaster(event)" class="flex gap-2">
+                                <input type="text" id="input-master-name" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="Tambah Nama Baru...">
+                                <input type="submit" value="Tambah" class="bg-sky-600 hover:bg-sky-500 text-white px-4 rounded-xl text-xs font-semibold cursor-pointer">
+                            </form>
+                            <ul id="list-master-names" class="text-xs divide-y divide-slate-800/60 max-h-48 overflow-y-auto"></ul>
+                        </div>
+
+                        <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
+                            <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-purple-400"><i class="fa-solid fa-briefcase mr-2"></i>Daftar Pilihan Jenis Jobdesk</h4>
+                            <form onsubmit="addJobdeskMaster(event)" class="flex gap-2">
+                                <input type="text" id="input-master-job" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500" placeholder="Tambah Jobdesk Baru...">
+                                <input type="submit" value="Tambah" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl text-xs font-semibold cursor-pointer">
+                            </form>
+                            <ul id="list-master-jobs" class="text-xs divide-y divide-slate-800/60 max-h-48 overflow-y-auto"></ul>
+                        </div>
                     </div>
                 </section>
 
@@ -237,44 +232,87 @@
         </main>
     </div>
 
-    <!-- ================= INTI LOGIKA CODING SYSTEM ================= -->
     <script>
-        // Data Global State (Local Database Terintegrasi)
-        let masterNames = ['Budi Setiawan', 'Andi Wijaya', 'Siti Rahma', 'Rian Hidayat'];
-        let masterJobs = ['UI/UX Designer', 'Front-End Developer', 'Back-End Developer', 'Content Admin'];
-        
-        let activePermits = [];
-        let archivedReports = [
-            { tanggal: '2026-05-27', nama: 'Andi Wijaya', jobdesk: 'Front-End Developer', jamKeluar: '14:20 WIB', telat: '5 Menit 12 Detik' }
-        ];
+        // Simulasi Deteksi IP Klien saat ini di halaman login
+        const CURRENT_CLIENT_IP = "192.168.1.100"; 
+        document.getElementById('detected-ip').innerText = CURRENT_CLIENT_IP;
 
-        let loginUser = null;
+        function getStorage(key, fallback) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : fallback;
+        }
+        function setStorage(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        // LOAD DATA MASTER AMAN DARI F5
+        let masterNames = getStorage('db_master_names', ['Budi Setiawan', 'Andi Wijaya', 'Siti Rahma', 'Rian Hidayat']);
+        let masterJobs = getStorage('db_master_jobs', ['UI/UX Designer', 'Front-End Developer', 'Back-End Developer', 'Content Admin']);
+        let activePermits = getStorage('db_active_permits', []);
+        let archivedReports = getStorage('db_archived_reports', []);
+        let loginUser = localStorage.getItem('db_current_login') || null;
+
+        // DB KHUSUS AKUN STAFF (Hanya bisa dibuat oleh admin)
+        let staffAccounts = getStorage('db_staff_accounts', [
+            { user: 'staff1', pass: '12345', ip: '192.168.1.100' } // Sample akun staff awal
+        ]);
+
         let systemClockInterval = null;
 
-        // Controller Proses Login
+        // ENGINE CHECK REFRESH HALAMAN
+        window.onload = function() {
+            if (loginUser) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-layout').classList.remove('hidden');
+                document.getElementById('avatar-initial').innerText = loginUser === 'gana' ? 'G' : 'S';
+                document.getElementById('role-badge').innerText = loginUser === 'gana' ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
+                document.getElementById('role-badge').className = loginUser === 'gana' ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
+
+                initDropdownsAndLists();
+                renderActiveMonitors();
+                renderReportTable();
+                startSystemEngine();
+            }
+        };
+
+        // ENGINE AUTHENTICATION LOGIN DENGAN VALIDASI ERROR DAN IP
         function handleLogin(event) {
             event.preventDefault();
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value;
 
-            // Aturan Akun Sesuai Request
-            if (u === 'admin' && p === 'admin123') {
-                loginUser = 'admin';
-            } else if (u === 'staff' && p === '123') {
-                loginUser = 'staff';
-            } else {
-                alert('Akses Ditolak! Akun tidak ditemukan.');
-                return;
+            // 1. Cek Autentikasi Utama Admin (Gana)
+            if (u === 'gana' && p === '1') {
+                loginUser = 'gana';
+            } 
+            // 2. Cek List Autentikasi Akun Staff Dinamis
+            else {
+                const akunStaffCocok = staffAccounts.find(account => account.user === u && account.pass === p);
+                
+                if (akunStaffCocok) {
+                    // Validasi IP Whitelist untuk Staff
+                    if (akunStaffCocok.ip === CURRENT_CLIENT_IP) {
+                        loginUser = u;
+                    } else {
+                        alert(`❌ Akses Ditolak!\nIP Address Anda (${CURRENT_CLIENT_IP}) tidak terdaftar untuk akun ini.\nHubungi Admin Gana untuk update IP.`);
+                        return;
+                    }
+                } else {
+                    // JIKA SALAH PASSWORD / USERNAME MUNCUL KETERANGAN INI Sesuai Request
+                    alert('❌ Maaf, Username atau Password yang Anda masukkan salah!');
+                    return;
+                }
             }
 
-            // Inisialisasi Tampilan Berdasarkan Role Login
+            // Simpan login ke memori browser
+            localStorage.setItem('db_current_login', loginUser);
+
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
-            document.getElementById('avatar-initial').innerText = loginUser.charAt(0).toUpperCase();
-            document.getElementById('role-badge').innerText = loginUser === 'admin' ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
-            document.getElementById('role-badge').className = loginUser === 'admin' ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
+            document.getElementById('avatar-initial').innerText = loginUser === 'gana' ? 'G' : 'S';
+            document.getElementById('role-badge').innerText = loginUser === 'gana' ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
+            document.getElementById('role-badge').className = loginUser === 'gana' ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
 
-            // Sinkronisasi Komponen Form & List Tabel
             initDropdownsAndLists();
             renderActiveMonitors();
             renderReportTable();
@@ -283,295 +321,276 @@
 
         function handleLogout() {
             loginUser = null;
+            localStorage.removeItem('db_current_login');
             clearInterval(systemClockInterval);
             document.getElementById('login-form').reset();
             document.getElementById('main-layout').classList.add('hidden');
             document.getElementById('login-screen').classList.remove('hidden');
         }
 
-        // Router Tab Navigasi & Proteksi Khusus Admin
+        // Navigasi Proteksi Menu Rahasia Admin Gana
         function switchTab(target) {
-            // PROTEKSI UTAMA: Cek jika user mencoba akses menu report/settings tapi bukan admin
-            if ((target === 'report' || target === 'settings') && loginUser !== 'admin') {
-                alert('⛔ MAAF AKSES DITOLAK! Menu ini dikunci dan hanya boleh dibuka oleh Akun Admin saja.');
+            if ((target === 'report' || target === 'settings') && loginUser !== 'gana') {
+                alert('⛔ MAAF AKSES DITOLAK!\nMenu laporan dokumen & setting akun staff hanya bisa diakses oleh Admin Gana.');
                 return;
             }
 
             const tabs = ['dashboard', 'izin', 'report', 'settings'];
             tabs.forEach(t => {
-                const element = document.getElementById(`tab-${t}`);
-                if (element) element.classList.add('hidden');
-                
+                const el = document.getElementById(`tab-${t}`);
+                if (el) el.classList.add('hidden');
                 const btn = document.getElementById(`btn-nav-${t}`);
                 if (btn) btn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/40";
             });
 
             document.getElementById(`tab-${target}`).classList.remove('hidden');
             document.getElementById(`btn-nav-${target}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-sky-400 bg-sky-500/10";
-            
-            // Breadcrumb Title Handler
-            const titles = { dashboard: 'Main Dashboard', izin: 'Buat Izin Baru', report: 'Laporan Telat (Doc)', settings: 'Pengaturan Sistem' };
-            document.getElementById('breadcrumb-child').innerText = titles[target];
+            document.getElementById('breadcrumb-child').innerText = target.toUpperCase();
         }
 
-        // Initialize Data ke Dropdown Select Menu Dinamis
+        // Render Data Master & Dropdown
         function initDropdownsAndLists() {
-            // Form Select Nama Karyawan
             const selectName = document.getElementById('form-select-name');
             selectName.innerHTML = '<option value="" disabled selected>-- Pilih Nama Personil --</option>';
             masterNames.forEach(n => selectName.innerHTML += `<option value="${n}">${n}</option>`);
 
-            // Form Select Jobdesk
             const selectJob = document.getElementById('form-select-job');
             selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
             masterJobs.forEach(j => selectJob.innerHTML += `<option value="${j}">${j}</option>`);
 
-            // Render Panel Control Settings List Nama
             const ulNames = document.getElementById('list-master-names');
             ulNames.innerHTML = '';
             masterNames.forEach((n, i) => {
-                ulNames.innerHTML += `<li class="py-2.5 flex justify-between items-center text-slate-300">${n} <button onclick="removeMasterData('name', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
+                ulNames.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${n} <button onclick="removeMasterData('name', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
             });
 
-            // Render Panel Control Settings List Jobdesk
             const ulJobs = document.getElementById('list-master-jobs');
             ulJobs.innerHTML = '';
             masterJobs.forEach((j, i) => {
-                ulJobs.innerHTML += `<li class="py-2.5 flex justify-between items-center text-slate-300">${j} <button onclick="removeMasterData('job', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
+                ulJobs.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${j} <button onclick="removeMasterData('job', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
+            });
+
+            // RENDER AKUN STAFF YANG SUDAH DIBUAT ADMIN
+            const tbodyStaff = document.getElementById('list-staff-accounts');
+            tbodyStaff.innerHTML = '';
+            staffAccounts.forEach((acc, i) => {
+                tbodyStaff.innerHTML += `
+                    <tr class="hover:bg-slate-900/40">
+                        <td class="py-2 font-mono font-bold text-emerald-400">${acc.user}</td>
+                        <td class="py-2 font-mono">•••••• ( ${acc.pass} )</td>
+                        <td class="py-2 text-slate-400 font-mono">${acc.ip}</td>
+                        <td class="py-2 text-right">
+                            <button onclick="removeStaffAccount(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-user-minus"></i> Hapus</button>
+                        </td>
+                    </tr>`;
             });
         }
 
-        // Engine Inti Hitung Mundur & Overtime Real-time Tracker (Detak Per Detik)
+        // PEMBUATAN AKUN STAFF BARU OLEH ADMIN GANA
+        function addStaffAccount(event) {
+            event.preventDefault();
+            const uInput = document.getElementById('reg-staff-user').value.trim();
+            const pInput = document.getElementById('reg-staff-pass').value.trim();
+            const ipInput = document.getElementById('reg-staff-ip').value.trim();
+
+            if(uInput === 'gana') { alert('Username "gana" adalah hak milik mutlak Admin!'); return; }
+            if(staffAccounts.some(a => a.user === uInput)) { alert('Username Staff ini sudah terdaftar!'); return; }
+
+            staffAccounts.push({ user: uInput, pass: pInput, ip: ipInput });
+            setStorage('db_staff_accounts', staffAccounts);
+            
+            document.getElementById('reg-staff-user').value = '';
+            document.getElementById('reg-staff-pass').value = '';
+            document.getElementById('reg-staff-ip').value = '';
+            
+            alert(`Sukses! Akun login staff baru (${uInput}) berhasil disimpan.`);
+            initDropdownsAndLists();
+        }
+
+        function removeStaffAccount(idx) {
+            if(confirm('Hapus hak akses login akun staff ini?')) {
+                staffAccounts.splice(idx, 1);
+                setStorage('db_staff_accounts', staffAccounts);
+                initDropdownsAndLists();
+            }
+        }
+
+        // Engine Waktu Detak Per Detik Real-time
         function startSystemEngine() {
             if(systemClockInterval) clearInterval(systemClockInterval);
-            
             systemClockInterval = setInterval(() => {
                 let statusDiperbarui = false;
+                const sekarang = new Date();
+                const jam = String(sekarang.getHours()).padStart(2, '0');
+                const menit = String(sekarang.getMinutes()).padStart(2, '0');
+                const detik = String(sekarang.getSeconds()).padStart(2, '0');
+                const elClock = document.getElementById('live-form-clock');
+                if(elClock) elClock.innerText = `${jam}:${menit}:${detik}`;
 
                 activePermits.forEach(p => {
                     if (p.status === 'Berjalan') {
                         p.sisaDetik--;
-                        if (p.sisaDetik <= 0) {
-                            p.status = 'Terlambat';
-                            p.sisaDetik = 0; // Mulai counter telat naik ke atas
-                            statusDiperbarui = true;
-                        }
+                        if (p.sisaDetik <= 0) { p.status = 'Terlambat'; p.sisaDetik = 0; statusDiperbarui = true; }
                     } else if (p.status === 'Terlambat') {
                         p.totalWaktuTelatDetik++;
                         statusDiperbarui = true;
                     }
                 });
 
-                // Re-render UI dashboard jika ada data berjalan per detik
-                if (activePermits.length > 0 || statusDiperbarui) {
+                if (statusDiperbarui || activePermits.length > 0) {
+                    setStorage('db_active_permits', activePermits);
                     renderActiveMonitors();
                 }
             }, 1000);
         }
 
-        // Aksi Submit Izin Baru
         function startIzinTimer(event) {
             event.preventDefault();
             const namaSelected = document.getElementById('form-select-name').value;
             const jobSelected = document.getElementById('form-select-job').value;
 
-            // Validasi duplikasi izin aktif
             if (activePermits.some(p => p.nama === namaSelected)) {
-                alert(`Personil bernama ${namaSelected} saat ini terdeteksi masih berada di luar!`);
+                alert(`Karyawan bernama ${namaSelected} terdeteksi masih di luar!`);
                 return;
             }
 
             const jamSkrg = new Date();
             const jamStr = `${String(jamSkrg.getHours()).padStart(2, '0')}:${String(jamSkrg.getMinutes()).padStart(2, '0')} WIB`;
-            const tglStr = jamSkrg.toISOString().split('T')[0];
-
-            // Masukkan object timer ke antrean monitor (15 Menit = 900 Detik)
+            
             activePermits.unshift({
                 id: Date.now(),
-                tanggal: tglStr,
+                tanggal: jamSkrg.toISOString().split('T')[0],
                 nama: namaSelected,
                 jobdesk: jobSelected,
                 jamKeluar: jamStr,
-                sisaDetik: 900, 
+                sisaDetik: 900,
                 totalWaktuTelatDetik: 0,
                 status: 'Berjalan'
             });
 
-            alert(`Izin keluar berhasil dimulai untuk ${namaSelected} selama 15 Menit.`);
-            
-            // Reset Form & Redirect ke Dashboard Monitor Utama
+            setStorage('db_active_permits', activePermits);
+            alert(`Izin keluar berhasil dimulai untuk ${namaSelected}.`);
             document.getElementById('form-select-name').selectedIndex = 0;
             document.getElementById('form-select-job').selectedIndex = 0;
             switchTab('dashboard');
+            renderActiveMonitors();
         }
 
-        // Berhenti / Konfirmasi Selesai Kembali dari Kamar Mandi/Luar
         function selesaikanIzin(id) {
             const index = activePermits.findIndex(p => p.id === id);
             if (index !== -1) {
                 const p = activePermits[index];
-                
-                // Jika statusnya terlambat, lempar datanya ke dalam database arsip pelanggaran (Doc Telat)
                 if (p.status === 'Terlambat') {
                     const m = Math.floor(p.totalWaktuTelatDetik / 60);
                     const s = p.totalWaktuTelatDetik % 60;
-                    const durasiTelatStr = `${m} Menit ${s} Detik`;
-
                     archivedReports.unshift({
-                        tanggal: p.tanggal,
-                        nama: p.nama,
-                        jobdesk: p.jobdesk,
-                        jamKeluar: p.jamKeluar,
-                        telat: durasiTelatStr
+                        tanggal: p.tanggal, nama: p.nama, jobdesk: p.jobdesk, jamKeluar: p.jamKeluar, telat: `${m} Menit ${s} Detik`
                     });
+                    setStorage('db_archived_reports', archivedReports);
                     renderReportTable();
                 }
-
-                // Hapus dari antrean monitor dashboard utama
                 activePermits.splice(index, 1);
+                setStorage('db_active_permits', activePermits);
                 renderActiveMonitors();
             }
         }
 
-        // Render Tampilan Monitor Dashboard Utama
         function renderActiveMonitors() {
             const wrapper = document.getElementById('active-timers-wrapper');
             const tbody = document.getElementById('monitor-table-body');
-            
-            wrapper.innerHTML = '';
-            tbody.innerHTML = '';
+            if(!wrapper || !tbody) return;
+            wrapper.innerHTML = ''; tbody.innerHTML = '';
 
             if (activePermits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 font-medium">Sistem Standby. Tidak ada personil yang sedang izin keluar saat ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 font-medium">Sistem Standby. Tidak ada personil di luar.</td></tr>`;
                 return;
             }
 
             activePermits.forEach(p => {
-                let sisaWaktuTeks = "";
-                let statusBadge = "";
-                let bgCardColor = "bg-luxury-dark border-slate-800";
-
+                let sisaWaktuTeks = ""; let statusBadge = ""; let bgCardColor = "bg-luxury-dark border-slate-800";
                 if (p.status === 'Berjalan') {
-                    const m = Math.floor(p.sisaDetik / 60);
-                    const s = p.sisaDetik % 60;
+                    const m = Math.floor(p.sisaDetik / 60); const s = p.sisaDetik % 60;
                     sisaWaktuTeks = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
                     statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block animate-ping"></span>Keluar</span>`;
-                    
-                    // Box Banner Alert Utama di Atas Dashboard
                     wrapper.innerHTML += `
                         <div class="bg-gradient-to-r from-sky-950/40 to-slate-900/40 border border-sky-500/20 rounded-2xl p-4 flex justify-between items-center">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center"><i class="fa-solid fa-hourglass-start animate-spin"></i></div>
-                                <div><h5 class="text-xs font-bold text-slate-400 uppercase tracking-wide">${p.nama} (${p.jobdesk})</h5><p class="text-xs text-slate-500 mt-0.5">Jam keluar: ${p.jamKeluar}</p></div>
+                                <div><h5 class="text-xs font-bold text-slate-400 uppercase tracking-wide">${p.nama}</h5><p class="text-xs text-slate-500">Mulai: ${p.jamKeluar}</p></div>
                             </div>
-                            <div class="text-right"><span class="text-2xl font-mono font-bold text-white tracking-wider text-glow-blue">${sisaWaktuTeks}</span></div>
+                            <div class="text-right"><span class="text-2xl font-mono font-bold text-white text-glow-blue">${sisaWaktuTeks}</span></div>
                         </div>`;
                 } else {
-                    const m = Math.floor(p.totalWaktuTelatDetik / 60);
-                    const s = p.totalWaktuTelatDetik % 60;
+                    const m = Math.floor(p.totalWaktuTelatDetik / 60); const s = p.totalWaktuTelatDetik % 60;
                     sisaWaktuTeks = `Telat: ${m}m ${s}s`;
                     statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/30 flex items-center gap-1 w-fit animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i>OVERTIME</span>`;
                     bgCardColor = "bg-red-950/10 border-red-900/30";
-
-                    // Box Banner Alert Utama Merah jika Telat
                     wrapper.innerHTML += `
                         <div class="bg-gradient-to-r from-red-950/40 to-slate-900/40 border border-red-500/30 rounded-2xl p-4 flex justify-between items-center">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center"><i class="fa-solid fa-bell animate-bounce"></i></div>
-                                <div><h5 class="text-xs font-bold text-red-400 uppercase tracking-wide">${p.nama} (${p.jobdesk})</h5><p class="text-xs text-slate-400 mt-0.5">⚠️ Terdeteksi Melebihi Batas 15 Menit!</p></div>
+                                <div><h5 class="text-xs font-bold text-red-400 uppercase tracking-wide">${p.nama}</h5><p class="text-xs text-slate-400">🚨 Melebihi Batas 15 Menit!</p></div>
                             </div>
-                            <div class="text-right"><span class="text-2xl font-mono font-bold text-red-500 tracking-wider text-glow-red">${sisaWaktuTeks}</span></div>
+                            <div class="text-right"><span class="text-2xl font-mono font-bold text-red-500 text-glow-red">${sisaWaktuTeks}</span></div>
                         </div>`;
                 }
 
-                // Append Data Ke Baris Tabel Monitor Utama
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-900/20 ${bgCardColor}">
                         <td class="px-6 py-4 font-semibold text-white">${p.nama}</td>
-                        <td class="px-6 py-4 text-slate-300">${p.jobdesk}</td>
-                        <td class="px-6 py-4 text-slate-400">${p.jamKeluar}</td>
+                        <td class="px-6 py-4 text-slate-400">${p.jobdesk}</td>
+                        <td class="px-6 py-4 text-slate-500">${p.jamKeluar}</td>
                         <td class="px-6 py-4 font-mono font-bold ${p.status === 'Terlambat' ? 'text-red-400' : 'text-sky-400'}">${sisaWaktuTeks}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4">
-                            <button onclick="selesaikanIzin(${p.id})" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold px-4 py-2 rounded-xl text-white transition">
-                                <i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Kembali / Selesai
-                            </button>
+                            <button onclick="selesaikanIzin(${p.id})" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold px-4 py-2 rounded-xl text-white transition">Kembali</button>
                         </td>
                     </tr>`;
             });
         }
 
-        // Render & Filter Tabel Laporan Telat Karyawan
         function renderReportTable(filterDate = '') {
             const tbody = document.getElementById('report-table-body');
-            tbody.innerHTML = '';
-
-            let dataTerfilter = archivedReports;
-            if (filterDate) {
-                dataTerfilter = archivedReports.filter(r => r.tanggal === filterDate);
-            }
-
-            if (dataTerfilter.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-6 text-center text-slate-500 text-xs">Tidak ada log data keterlambatan karyawan pada tanggal ini.</td></tr>`;
+            if(!tbody) return; tbody.innerHTML = '';
+            let filtered = filterDate ? archivedReports.filter(r => r.tanggal === filterDate) : archivedReports;
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-6 text-center text-slate-500 text-xs">Tidak ada log data keterlambatan.</td></tr>`;
                 return;
             }
-
-            dataTerfilter.forEach(r => {
-                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-                const formatDay = days[new Date(r.tanggal).getDay()];
-                
+            filtered.forEach(r => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-900/30 border-b border-slate-800/40">
-                        <td class="px-6 py-4 text-xs font-medium text-slate-400">${formatDay}, ${r.tanggal}</td>
+                        <td class="px-6 py-4 text-xs text-slate-400">${r.tanggal}</td>
                         <td class="px-6 py-4 font-bold text-white">${r.nama}</td>
-                        <td class="px-6 py-4 text-slate-300">${r.jobdesk}</td>
-                        <td class="px-6 py-4 text-slate-400">${r.jamKeluar}</td>
-                        <td class="px-6 py-4 font-semibold text-red-400"><i class="fa-solid fa-clock-rotate-left mr-1.5 text-xs"></i>${r.telat}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/10 text-xs font-medium">Pelanggaran Terdata</span></td>
+                        <td class="px-6 py-4 text-slate-400">${r.jobdesk}</td>
+                        <td class="px-6 py-4 text-slate-500">${r.jamKeluar}</td>
+                        <td class="px-6 py-4 font-semibold text-red-400">${r.telat}</td>
+                        <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-xs border border-red-500/10">Pelanggaran Terdata</span></td>
                     </tr>`;
             });
         }
 
-        function filterReportByDate() {
-            const d = document.getElementById('filter-date-input').value;
-            renderReportTable(d);
-        }
+        function filterReportByDate() { renderReportTable(document.getElementById('filter-date-input').value); }
+        function clearDateFilter() { document.getElementById('filter-date-input').value = ''; renderReportTable(); }
 
-        function clearDateFilter() {
-            document.getElementById('filter-date-input').value = '';
-            renderReportTable();
-        }
-
-        // CRUD Tambah / Hapus Data di Menu Pengaturan Master
         function addKaryawanMaster(event) {
-            event.preventDefault();
-            const input = document.getElementById('input-master-name');
-            const val = input.value.trim();
-            if(masterNames.includes(val)) { alert('Nama ini sudah ada!'); return; }
-            masterNames.push(val);
-            input.value = '';
-            initDropdownsAndLists();
+            event.preventDefault(); const input = document.getElementById('input-master-name'); const val = input.value.trim();
+            if(masterNames.includes(val)) return; masterNames.push(val); setStorage('db_master_names', masterNames);
+            input.value = ''; initDropdownsAndLists();
         }
-
         function addJobdeskMaster(event) {
-            event.preventDefault();
-            const input = document.getElementById('input-master-job');
-            const val = input.value.trim();
-            if(masterJobs.includes(val)) { alert('Nama jobdesk ini sudah ada!'); return; }
-            masterJobs.push(val);
-            input.value = '';
-            initDropdownsAndLists();
+            event.preventDefault(); const input = document.getElementById('input-master-job'); const val = input.value.trim();
+            if(masterJobs.includes(val)) return; masterJobs.push(val); setStorage('db_master_jobs', masterJobs);
+            input.value = ''; initDropdownsAndLists();
         }
-
         function removeMasterData(type, idx) {
-            if (confirm('Hapus data master ini? Data pilihan di dropdown formulir akan ikut berubah.')) {
-                if (type === 'name') masterNames.splice(idx, 1);
-                if (type === 'job') masterJobs.splice(idx, 1);
+            if (confirm('Hapus data master?')) {
+                if (type === 'name') { masterNames.splice(idx, 1); setStorage('db_master_names', masterNames); }
+                if (type === 'job') { masterJobs.splice(idx, 1); setStorage('db_master_jobs', masterJobs); }
                 initDropdownsAndLists();
             }
         }
 
-        // Auto Load Jam Kalender Hari Ini pada Top Navbar
         const ops = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-time-display').innerText = new Date().toLocaleDateString('id-ID', ops);
     </script>
