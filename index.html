@@ -79,7 +79,7 @@
                 </div>
 
                 <nav class="p-4 space-y-1">
-                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
+                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
                         <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD MONITOR
                     </button>
                     <button onclick="switchTab('izin')" id="btn-nav-izin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
@@ -211,9 +211,8 @@
                                     <th class="px-6 py-4">Total Keterlambatan</th>
                                     <th class="px-6 py-4">Status</th>
                                 </tr>
-                            </thead>
-                            <tbody id="report-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 </section>
 
@@ -284,7 +283,6 @@
         let systemClockInterval = null;
 
         window.onload = function() {
-            // Update Real-Time Date & Clock di Header
             setInterval(() => {
                 const n = new Date();
                 document.getElementById('current-time-display').innerText = n.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ` - ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} WIB`;
@@ -330,11 +328,9 @@
             document.getElementById('main-layout').style.setProperty('display', 'flex', 'important');
             document.getElementById('main-layout').classList.remove('hidden');
             
-            // Inisial huruf HANYA untuk lingkaran kecil di pojok kanan atas
             const initial = currentUserSession.fullname.charAt(0).toUpperCase();
             document.getElementById('avatar-initial').innerText = initial;
 
-            // Atur nama di formulir izin
             document.getElementById('form-staff-name').value = currentUserSession.fullname;
 
             const isGana = currentUserSession.username === 'gana';
@@ -434,7 +430,10 @@
 
             setStorage('db_active_permits', activePermits);
             renderLiveQueueAndMonitors();
-            switchTab('dashboard');
+            
+            // PERBAIKAN: Tetap di menu izin keluar, tidak lompat ke dashboard
+            switchTab('izin');
+            alert('Waktu izin keluar berhasil dimulai!');
         }
 
         function triggerEndTime() {
@@ -460,8 +459,124 @@
             setStorage('db_active_permits', activePermits);
             document.getElementById('form-select-job').selectedIndex = 0; 
             renderLiveQueueAndMonitors();
+            
+            // PERBAIKAN: Tetap di menu izin keluar setelah stop timer
+            switchTab('izin');
             alert('Waktu keluar berhasil dihentikan. Data antrean dibersihkan!');
-            switchTab('dashboard');
+        }
+
+        function initDropdownsAndLists() {
+            const selectJob = document.getElementById('form-select-job');
+            if (selectJob) {
+                selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
+                masterJobs.forEach(job => {
+                    selectJob.innerHTML += `<option value="${job}">${job}</option>`;
+                });
+            }
+
+            const listMasterJobs = document.getElementById('list-master-jobs');
+            if (listMasterJobs) {
+                listMasterJobs.innerHTML = '';
+                masterJobs.forEach((job, idx) => {
+                    listMasterJobs.innerHTML += `
+                        <li class="flex justify-between items-center py-2 text-slate-300">
+                            <span>${job}</span>
+                            <button onclick="deleteJobdeskMaster(${idx})" class="text-red-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                        </li>`;
+                });
+            }
+
+            const listAccounts = document.getElementById('list-staff-accounts');
+            if (listAccounts) {
+                listAccounts.innerHTML = '';
+                staffAccounts.forEach((acc, idx) => {
+                    listAccounts.innerHTML += `
+                        <tr class="hover:bg-slate-900/30">
+                            <td class="py-2.5 font-medium text-white">${acc.fullname}</td>
+                            <td class="py-2.5 font-mono text-slate-400">${acc.user}</td>
+                            <td class="py-2.5 font-mono text-slate-400">${acc.pass}</td>
+                            <td class="py-2.5 font-mono text-emerald-400">${acc.ip}</td>
+                            <td class="py-2.5 text-right"><button onclick="deleteStaffAccount(${idx})" class="text-red-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button></td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function addJobdeskMaster(e) {
+            e.preventDefault();
+            const val = document.getElementById('input-master-job').value.trim();
+            if(!val) return;
+            masterJobs.push(val);
+            setStorage('db_master_jobs', masterJobs);
+            document.getElementById('input-master-job').value = '';
+            initDropdownsAndLists();
+        }
+
+        function deleteJobdeskMaster(idx) {
+            masterJobs.splice(idx, 1);
+            setStorage('db_master_jobs', masterJobs);
+            initDropdownsAndLists();
+        }
+
+        function addStaffAccount(e) {
+            e.preventDefault();
+            const fullname = document.getElementById('reg-staff-fullname').value.trim();
+            const user = document.getElementById('reg-staff-user').value.trim();
+            const pass = document.getElementById('reg-staff-pass').value.trim();
+            const ip = document.getElementById('reg-staff-ip').value.trim();
+
+            staffAccounts.push({ fullname, user, pass, ip });
+            setStorage('db_staff_accounts', staffAccounts);
+
+            document.getElementById('reg-staff-fullname').value = '';
+            document.getElementById('reg-staff-user').value = '';
+            document.getElementById('reg-staff-pass').value = '';
+            document.getElementById('reg-staff-ip').value = '';
+            
+            initDropdownsAndLists();
+        }
+
+        function deleteStaffAccount(idx) {
+            staffAccounts.splice(idx, 1);
+            setStorage('db_staff_accounts', staffAccounts);
+            initDropdownsAndLists();
+        }
+
+        function renderReportTable(filteredData = null) {
+            const tbody = document.getElementById('report-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            
+            const dataToRender = filteredData || archivedReports;
+
+            if (dataToRender.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 text-xs">Tidak ada log keterlambatan tercatat.</td></tr>`;
+                return;
+            }
+
+            dataToRender.forEach(r => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-red-950/5 transition">
+                        <td class="px-6 py-4 font-mono text-xs text-slate-400">${r.tanggal}</td>
+                        <td class="px-6 py-4 font-bold text-white uppercase">${r.nama}</td>
+                        <td class="px-6 py-4 text-sky-400">${r.jobdesk}</td>
+                        <td class="px-6 py-4 font-mono">${r.jamKeluar}</td>
+                        <td class="px-6 py-4 text-red-400 font-bold font-mono">${r.telat}</td>
+                        <td class="px-6 py-4"><span class="bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded-md text-xs font-semibold">Pelanggaran Doc</span></td>
+                    </tr>`;
+            });
+        }
+
+        function filterReportByDate() {
+            const dateVal = document.getElementById('filter-date-input').value;
+            if (!dateVal) return;
+            const filtered = archivedReports.filter(r => r.tanggal === dateVal);
+            renderReportTable(filtered);
+        }
+
+        function clearDateFilter() {
+            document.getElementById('filter-date-input').value = '';
+            renderReportTable();
         }
 
         function renderLiveQueueAndMonitors() {
@@ -470,7 +585,8 @@
             const badgeCount = document.getElementById('active-count-badge');
             
             if(!container) return;
-            container.innerHTML = ''; if(tbody) tbody.innerHTML = '';
+            container.innerHTML = ''; 
+            if(tbody) tbody.innerHTML = '';
             badgeCount.innerText = `${activePermits.length} Aktif`;
 
             if (activePermits.length === 0) {
@@ -509,146 +625,20 @@
                             </p>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs font-bold block text-slate-500 uppercase tracking-wider mb-0.5">Timer Status</span>
-                            <span class="font-mono text-base font-bold ${textStyle}">${sisaWaktuTeks}</span>
+                            <span class="text-base font-bold font-mono ${textStyle}">${sisaWaktuTeks}</span>
                         </div>
                     </div>`;
 
-                if(tbody) {
+                if (tbody) {
                     tbody.innerHTML += `
                         <tr class="hover:bg-slate-900/20 transition">
-                            <td class="px-6 py-4 font-semibold text-white uppercase text-xs tracking-wider">${p.nama}</td>
-                            <td class="px-6 py-4 text-xs text-sky-400 font-medium">${p.jobdesk}</td>
-                            <td class="px-6 py-4 font-mono text-xs">${p.jamKeluar}</td>
-                            <td class="px-6 py-4 font-mono text-sm font-bold ${textStyle}">${sisaWaktuTeks}</td>
+                            <td class="px-6 py-3.5 font-bold text-white uppercase">${p.nama}</td>
+                            <td class="px-6 py-3.5 text-slate-400">${p.jobdesk}</td>
+                            <td class="px-6 py-3.5 font-mono text-xs">${p.jamKeluar}</td>
+                            <td class="px-6 py-3.5 font-mono font-bold ${textStyle}">${sisaWaktuTeks}</td>
                         </tr>`;
                 }
             });
-        }
-
-        function renderReportTable(filterDate = null) {
-            const tbody = document.getElementById('report-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            let source = archivedReports;
-            if (filterDate) {
-                source = archivedReports.filter(r => r.tanggal === filterDate);
-            }
-
-            if (source.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 text-xs">Tidak ada data riwayat pelanggaran keterlambatan.</td></tr>`;
-                return;
-            }
-
-            source.forEach(r => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-red-950/5 transition">
-                        <td class="px-6 py-4 font-mono text-xs">${r.tanggal}</td>
-                        <td class="px-6 py-4 font-bold text-slate-200 uppercase text-xs">${r.nama}</td>
-                        <td class="px-6 py-4 text-xs text-slate-400">${r.jobdesk}</td>
-                        <td class="px-6 py-4 font-mono text-xs">${r.jamKeluar}</td>
-                        <td class="px-6 py-4 font-mono text-xs text-red-400 font-semibold">${r.telat}</td>
-                        <td class="px-6 py-4">
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded-md">Pelanggaran Doc</span>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        function filterReportByDate() {
-            const val = document.getElementById('filter-date-input').value;
-            if(val) renderReportTable(val);
-        }
-        function clearDateFilter() {
-            document.getElementById('filter-date-input').value = '';
-            renderReportTable();
-        }
-
-        function initDropdownsAndLists() {
-            const selectJob = document.getElementById('form-select-job');
-            if(selectJob) {
-                selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jabatan / Tugas Anda --</option>';
-                masterJobs.forEach(j => {
-                    selectJob.innerHTML += `<option value="${j}">${j}</option>`;
-                });
-            }
-
-            const listJobs = document.getElementById('list-master-jobs');
-            if (listJobs) {
-                listJobs.innerHTML = '';
-                masterJobs.forEach((j, index) => {
-                    listJobs.innerHTML += `
-                        <li class="flex justify-between items-center py-2.5">
-                            <span class="font-medium text-slate-300">${j}</span>
-                            <button onclick="deleteJobdeskMaster(${index})" class="text-red-400 hover:text-red-500 transition font-semibold text-[11px]"><i class="fa-solid fa-trash-can"></i></button>
-                        </li>`;
-                });
-            }
-
-            const listStaff = document.getElementById('list-staff-accounts');
-            if (listStaff) {
-                listStaff.innerHTML = '';
-                staffAccounts.forEach((acc, index) => {
-                    listStaff.innerHTML += `
-                        <tr class="hover:bg-slate-900/30">
-                            <td class="py-3 font-medium text-white">${acc.fullname}</td>
-                            <td class="py-3 font-mono text-slate-400">${acc.user}</td>
-                            <td class="py-3 font-mono text-slate-400">${acc.pass}</td>
-                            <td class="py-3 font-mono text-emerald-400">${acc.ip}</td>
-                            <td class="py-3 text-right">
-                                <button onclick="deleteStaffAccount(${index})" class="text-red-400 hover:text-red-500 transition"><i class="fa-solid fa-user-minus"></i> Hapus</button>
-                            </td>
-                        </tr>`;
-                });
-            }
-        }
-
-        function addJobdeskMaster(e) {
-            e.preventDefault();
-            const input = document.getElementById('input-master-job');
-            const val = input.value.trim();
-            if(!val) return;
-            masterJobs.push(val);
-            setStorage('db_master_jobs', masterJobs);
-            input.value = '';
-            initDropdownsAndLists();
-        }
-        function deleteJobdeskMaster(index) {
-            masterJobs.splice(index, 1);
-            setStorage('db_master_jobs', masterJobs);
-            initDropdownsAndLists();
-        }
-
-        function addStaffAccount(e) {
-            e.preventDefault();
-            const fn = document.getElementById('reg-staff-fullname').value.trim();
-            const u = document.getElementById('reg-staff-user').value.trim().toLowerCase();
-            const p = document.getElementById('reg-staff-pass').value;
-            const ip = document.getElementById('reg-staff-ip').value.trim();
-
-            if (staffAccounts.some(acc => acc.user === u)) {
-                alert('Username tersebut sudah terdaftar di sistem!'); return;
-            }
-
-            staffAccounts.push({ fullname: fn, user: u, pass: p, ip: ip });
-            setStorage('db_staff_accounts', staffAccounts);
-
-            document.getElementById('reg-staff-fullname').value = '';
-            document.getElementById('reg-staff-user').value = '';
-            document.getElementById('reg-staff-pass').value = '';
-            document.getElementById('reg-staff-ip').value = '';
-
-            initDropdownsAndLists();
-            alert('Akun staff baru berhasil didaftarkan!');
-        }
-
-        function deleteStaffAccount(index) {
-            if(confirm('Apakah Anda yakin ingin menghapus otoritas akun staff ini?')) {
-                staffAccounts.splice(index, 1);
-                setStorage('db_staff_accounts', staffAccounts);
-                initDropdownsAndLists();
-            }
         }
     </script>
 </body>
