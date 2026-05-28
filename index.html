@@ -73,8 +73,8 @@
         <aside class="w-64 bg-luxury-dark border-r border-slate-800 flex flex-col justify-between">
             <div>
                 <div class="p-6 border-b border-slate-800/60 flex items-center justify-center">
-                    <div id="sidebar-logo-container" class="w-full flex items-center justify-center py-2">
-                        <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-lg shadow-md" id="sidebar-avatar-initial">D</div>
+                    <div id="sidebar-logo-container" class="w-full flex items-center justify-center py-1">
+                        <img src="logo-danatoto.png" alt="Danatoto Logo" class="h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">
                     </div>
                 </div>
 
@@ -284,6 +284,12 @@
         let systemClockInterval = null;
 
         window.onload = function() {
+            // Update Real-Time Date & Clock di Header
+            setInterval(() => {
+                const n = new Date();
+                document.getElementById('current-time-display').innerText = n.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ` - ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} WIB`;
+            }, 1000);
+
             if (currentUserSession) {
                 applyInterfaceSecurity();
             } else {
@@ -306,11 +312,11 @@
                     if (matchedStaff.ip === CURRENT_CLIENT_IP) {
                         currentUserSession = { username: matchedStaff.user, fullname: matchedStaff.fullname };
                     } else {
-                        errorDiv.innerText = `❌ IP Address (${CURRENT_CLIENT_IP}) tidak diotorisasi!`;
+                        errorDiv.innerHTML = `❌ IP Address (${CURRENT_CLIENT_IP}) tidak diotorisasi!`;
                         errorDiv.classList.remove('hidden'); return;
                     }
                 } else {
-                    errorDiv.innerText = "❌ Username atau Password salah!";
+                    errorDiv.innerHTML = "❌ Username atau Password salah!";
                     errorDiv.classList.remove('hidden'); return;
                 }
             }
@@ -324,11 +330,9 @@
             document.getElementById('main-layout').style.setProperty('display', 'flex', 'important');
             document.getElementById('main-layout').classList.remove('hidden');
             
+            // Inisial huruf HANYA untuk lingkaran kecil di pojok kanan atas
             const initial = currentUserSession.fullname.charAt(0).toUpperCase();
             document.getElementById('avatar-initial').innerText = initial;
-            if(document.getElementById('sidebar-avatar-initial')) {
-                document.getElementById('sidebar-avatar-initial').innerText = initial;
-            }
 
             // Atur nama di formulir izin
             document.getElementById('form-staff-name').value = currentUserSession.fullname;
@@ -350,7 +354,6 @@
             renderReportTable();
             startSystemEngine();
             
-            // Panggil switchTab ke 'dashboard' di awal untuk memicu logika sapaan muncul pertama kali
             switchTab('dashboard');
         }
 
@@ -361,7 +364,6 @@
             location.reload();
         }
 
-        // 🎯 LOGIKA SWITCH TAB DAN DISPLAY SAPAAN USER (SANGAT PRESISI)
         function switchTab(target) {
             if (target === 'settings' && currentUserSession.username !== 'gana') { return; }
             
@@ -371,20 +373,17 @@
                 if (document.getElementById(`btn-nav-${t}`)) document.getElementById(`btn-nav-${t}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40";
             });
             
-            // Tampilkan tab target
             document.getElementById(`tab-${target}`).classList.remove('hidden');
             if(document.getElementById(`btn-nav-${target}`)) document.getElementById(`btn-nav-${target}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10";
             
-            // Atur text breadcrumb child
             document.getElementById('breadcrumb-child').innerText = target.toUpperCase() === 'REPORT' ? 'TELAT DOC IZIN' : target.toUpperCase() === 'IZIN' ? 'IZIN KELUAR' : target.toUpperCase();
 
-            // 🔥 LOGIKA KUNCI ELEMEN HI/HALO USER SKRG:
             const greeting = document.getElementById('user-greeting');
             if (target === 'dashboard') {
                 greeting.innerText = `Halo, ${currentUserSession.fullname}! Selamat Bekerja.`;
-                greeting.classList.remove('hidden'); // Munculkan saat di menu Dashboard Monitor
+                greeting.classList.remove('hidden');
             } else {
-                greeting.classList.add('hidden');    // Sembunyikan total saat klik menu lain
+                greeting.classList.add('hidden');
             }
         }
 
@@ -428,14 +427,14 @@
                 nama: namaSelected,
                 jobdesk: jobSelected,
                 jamKeluar: jamStr,
-                sisaDetik: 900, // Mulai hitung mundur otomatis dari 15:00 Menit kebawah
+                sisaDetik: 900, 
                 totalWaktuTelatDetik: 0,
                 status: 'Berjalan'
             });
 
             setStorage('db_active_permits', activePermits);
             renderLiveQueueAndMonitors();
-            switchTab('dashboard'); // Pindahkan fokus ke monitor dashboard setelah start
+            switchTab('dashboard');
         }
 
         function triggerEndTime() {
@@ -502,96 +501,155 @@
                     <div class="border ${cardBorder} rounded-xl p-4 flex justify-between items-center gap-3 transition">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                <span class="w-2 h-2 rounded-full ${p.status === 'Berjalan'?'bg-emerald-500':'bg-red-500'} animate-ping"></span>
                                 <h5 class="text-sm font-bold text-white uppercase tracking-wide">${p.nama}</h5>
                             </div>
                             <p class="text-[11px] text-slate-400 mt-1">
                                 Keluar: <span class="text-slate-300 font-mono">${p.jamKeluar}</span> | Job: <span class="text-sky-400">${p.jobdesk}</span>
                             </p>
                         </div>
-                        <div class="text-2xl font-mono font-bold ${textStyle}">${sisaWaktuTeks}</div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold block text-slate-500 uppercase tracking-wider mb-0.5">Timer Status</span>
+                            <span class="font-mono text-base font-bold ${textStyle}">${sisaWaktuTeks}</span>
+                        </div>
                     </div>`;
 
                 if(tbody) {
                     tbody.innerHTML += `
-                        <tr class="hover:bg-slate-900/20">
-                            <td class="px-6 py-4 font-bold text-white">${p.nama}</td>
-                            <td class="px-6 py-4 text-slate-400">${p.jobdesk}</td>
-                            <td class="px-6 py-4 text-slate-500 font-mono">${p.jamKeluar}</td>
-                            <td class="px-6 py-4 font-mono font-bold ${p.status==='Terlambat'?'text-red-400':'text-sky-400'}">${sisaWaktuTeks}</td>
+                        <tr class="hover:bg-slate-900/20 transition">
+                            <td class="px-6 py-4 font-semibold text-white uppercase text-xs tracking-wider">${p.nama}</td>
+                            <td class="px-6 py-4 text-xs text-sky-400 font-medium">${p.jobdesk}</td>
+                            <td class="px-6 py-4 font-mono text-xs">${p.jamKeluar}</td>
+                            <td class="px-6 py-4 font-mono text-sm font-bold ${textStyle}">${sisaWaktuTeks}</td>
                         </tr>`;
                 }
             });
         }
 
-        function renderReportTable(filterDate = '') {
-            const tbody = document.getElementById('report-table-body'); if(!tbody) return; tbody.innerHTML = '';
-            let filtered = filterDate ? archivedReports.filter(r => r.tanggal === filterDate) : archivedReports;
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-6 text-center text-slate-500 text-xs">Tidak ada log data keterlambatan.</td></tr>`; return;
+        function renderReportTable(filterDate = null) {
+            const tbody = document.getElementById('report-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            let source = archivedReports;
+            if (filterDate) {
+                source = archivedReports.filter(r => r.tanggal === filterDate);
             }
-            filtered.forEach(r => {
+
+            if (source.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 text-xs">Tidak ada data riwayat pelanggaran keterlambatan.</td></tr>`;
+                return;
+            }
+
+            source.forEach(r => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-900/30">
-                        <td class="px-6 py-4 text-xs text-slate-400">${r.tanggal}</td>
-                        <td class="px-6 py-4 font-bold text-white">${r.nama}</td>
-                        <td class="px-6 py-4 text-slate-400">${r.jobdesk}</td>
-                        <td class="px-6 py-4 text-slate-500 font-mono">${r.jamKeluar}</td>
-                        <td class="px-6 py-4 font-semibold text-red-400 font-mono">${r.telat}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-xs border border-red-500/10">Overtime</span></td>
+                    <tr class="hover:bg-red-950/5 transition">
+                        <td class="px-6 py-4 font-mono text-xs">${r.tanggal}</td>
+                        <td class="px-6 py-4 font-bold text-slate-200 uppercase text-xs">${r.nama}</td>
+                        <td class="px-6 py-4 text-xs text-slate-400">${r.jobdesk}</td>
+                        <td class="px-6 py-4 font-mono text-xs">${r.jamKeluar}</td>
+                        <td class="px-6 py-4 font-mono text-xs text-red-400 font-semibold">${r.telat}</td>
+                        <td class="px-6 py-4">
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded-md">Pelanggaran Doc</span>
+                        </td>
                     </tr>`;
             });
         }
 
-        function filterReportByDate() { renderReportTable(document.getElementById('filter-date-input').value); }
-        function clearDateFilter() { document.getElementById('filter-date-input').value = ''; renderReportTable(); }
-
-        function addStaffAccount(event) {
-            event.preventDefault();
-            const fn = document.getElementById('reg-staff-fullname').value.trim();
-            const u = document.getElementById('reg-staff-user').value.trim();
-            const p = document.getElementById('reg-staff-pass').value.trim();
-            const ip = document.getElementById('reg-staff-ip').value.trim();
-            if(u === 'gana' || staffAccounts.some(a => a.user === u)) { alert('Username tidak valid!'); return; }
-            staffAccounts.push({ fullname: fn, user: u, pass: p, ip: ip });
-            setStorage('db_staff_accounts', staffAccounts); event.target.reset(); initDropdownsAndLists();
+        function filterReportByDate() {
+            const val = document.getElementById('filter-date-input').value;
+            if(val) renderReportTable(val);
         }
-        function removeStaffAccount(idx) {
-            if(confirm('Hapus akun staff ini?')) { staffAccounts.splice(idx, 1); setStorage('db_staff_accounts', staffAccounts); initDropdownsAndLists(); }
-        }
-        function addJobdeskMaster(event) {
-            event.preventDefault(); const input = document.getElementById('input-master-job'); const val = input.value.trim();
-            if(!masterJobs.includes(val)) { masterJobs.push(val); setStorage('db_master_jobs', masterJobs); }
-            input.value = ''; initDropdownsAndLists();
-        }
-        function removeMasterData(idx) {
-            if (confirm('Hapus jobdesk ini?')) { masterJobs.splice(idx, 1); setStorage('db_master_jobs', masterJobs); initDropdownsAndLists(); }
+        function clearDateFilter() {
+            document.getElementById('filter-date-input').value = '';
+            renderReportTable();
         }
 
         function initDropdownsAndLists() {
             const selectJob = document.getElementById('form-select-job');
-            selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
-            masterJobs.forEach(j => selectJob.innerHTML += `<option value="${j}">${j}</option>`);
+            if(selectJob) {
+                selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jabatan / Tugas Anda --</option>';
+                masterJobs.forEach(j => {
+                    selectJob.innerHTML += `<option value="${j}">${j}</option>`;
+                });
+            }
 
-            const ulJobs = document.getElementById('list-master-jobs'); ulJobs.innerHTML = '';
-            masterJobs.forEach((j, i) => {
-                ulJobs.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${j} <button onclick="removeMasterData(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
-            });
+            const listJobs = document.getElementById('list-master-jobs');
+            if (listJobs) {
+                listJobs.innerHTML = '';
+                masterJobs.forEach((j, index) => {
+                    listJobs.innerHTML += `
+                        <li class="flex justify-between items-center py-2.5">
+                            <span class="font-medium text-slate-300">${j}</span>
+                            <button onclick="deleteJobdeskMaster(${index})" class="text-red-400 hover:text-red-500 transition font-semibold text-[11px]"><i class="fa-solid fa-trash-can"></i></button>
+                        </li>`;
+                });
+            }
 
-            const tbodyStaff = document.getElementById('list-staff-accounts'); tbodyStaff.innerHTML = '';
-            staffAccounts.forEach((acc, i) => {
-                tbodyStaff.innerHTML += `
-                    <tr class="hover:bg-slate-900/40">
-                        <td class="py-2 font-semibold text-white">${acc.fullname}</td>
-                        <td class="py-2 font-mono text-emerald-400">${acc.user}</td>
-                        <td class="py-2 font-mono">•••••• (${acc.pass})</td>
-                        <td class="py-2 text-slate-400 font-mono">${acc.ip}</td>
-                        <td class="py-2 text-right"><button onclick="removeStaffAccount(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-user-minus"></i></button></td>
-                    </tr>`;
-            });
+            const listStaff = document.getElementById('list-staff-accounts');
+            if (listStaff) {
+                listStaff.innerHTML = '';
+                staffAccounts.forEach((acc, index) => {
+                    listStaff.innerHTML += `
+                        <tr class="hover:bg-slate-900/30">
+                            <td class="py-3 font-medium text-white">${acc.fullname}</td>
+                            <td class="py-3 font-mono text-slate-400">${acc.user}</td>
+                            <td class="py-3 font-mono text-slate-400">${acc.pass}</td>
+                            <td class="py-3 font-mono text-emerald-400">${acc.ip}</td>
+                            <td class="py-3 text-right">
+                                <button onclick="deleteStaffAccount(${index})" class="text-red-400 hover:text-red-500 transition"><i class="fa-solid fa-user-minus"></i> Hapus</button>
+                            </td>
+                        </tr>`;
+                });
+            }
         }
 
-        document.getElementById('current-time-display').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        function addJobdeskMaster(e) {
+            e.preventDefault();
+            const input = document.getElementById('input-master-job');
+            const val = input.value.trim();
+            if(!val) return;
+            masterJobs.push(val);
+            setStorage('db_master_jobs', masterJobs);
+            input.value = '';
+            initDropdownsAndLists();
+        }
+        function deleteJobdeskMaster(index) {
+            masterJobs.splice(index, 1);
+            setStorage('db_master_jobs', masterJobs);
+            initDropdownsAndLists();
+        }
+
+        function addStaffAccount(e) {
+            e.preventDefault();
+            const fn = document.getElementById('reg-staff-fullname').value.trim();
+            const u = document.getElementById('reg-staff-user').value.trim().toLowerCase();
+            const p = document.getElementById('reg-staff-pass').value;
+            const ip = document.getElementById('reg-staff-ip').value.trim();
+
+            if (staffAccounts.some(acc => acc.user === u)) {
+                alert('Username tersebut sudah terdaftar di sistem!'); return;
+            }
+
+            staffAccounts.push({ fullname: fn, user: u, pass: p, ip: ip });
+            setStorage('db_staff_accounts', staffAccounts);
+
+            document.getElementById('reg-staff-fullname').value = '';
+            document.getElementById('reg-staff-user').value = '';
+            document.getElementById('reg-staff-pass').value = '';
+            document.getElementById('reg-staff-ip').value = '';
+
+            initDropdownsAndLists();
+            alert('Akun staff baru berhasil didaftarkan!');
+        }
+
+        function deleteStaffAccount(index) {
+            if(confirm('Apakah Anda yakin ingin menghapus otoritas akun staff ini?')) {
+                staffAccounts.splice(index, 1);
+                setStorage('db_staff_accounts', staffAccounts);
+                initDropdownsAndLists();
+            }
+        }
     </script>
 </body>
 </html>
