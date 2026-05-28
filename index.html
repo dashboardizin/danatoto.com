@@ -6,7 +6,7 @@
     <title>Premium Permission Control Dashboard</title>
     <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -37,7 +37,6 @@
             <h2 class="text-2xl font-bold text-white text-glow-blue tracking-wide">SYSTEM LOGIN</h2>
             <p class="text-slate-400 text-sm mt-1 mb-2">Silakan masuk menggunakan kredensial Anda</p>
             
-            <!-- Simulasi IP Detektor -->
             <div class="text-[11px] text-amber-500 bg-amber-500/5 border border-amber-500/10 rounded-lg p-2 mb-6 font-mono">
                 <i class="fa-solid fa-network-wired mr-1"></i> IP Terdeteksi: <span id="detected-ip">192.168.1.100</span>
             </div>
@@ -55,7 +54,6 @@
                     Masuk Ke Sistem
                 </button>
                 
-                <!-- TEMPAT ERROR MESSAGE BARU DI BAWAH FORM (Sesuai Request) -->
                 <div id="login-error-msg" class="hidden text-xs bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-3 text-center font-medium mt-3 animate-pulse">
                     <i class="fa-solid fa-circle-xmark mr-1"></i> Maaf, Username atau Password yang Anda masukkan salah!
                 </div>
@@ -66,18 +64,17 @@
     <!-- ================= MAIN CORE LAYOUT ================= -->
     <div id="main-layout" class="hidden h-full flex">
         
-        <!-- ================= 2. SIDEBAR MENU (Sesuai Referensi image_acf701.png) ================= -->
+        <!-- ================= 2. SIDEBAR MENU ================= -->
         <aside class="w-64 bg-luxury-dark border-r border-slate-800 flex flex-col justify-between">
             <div>
                 <div class="p-6 border-b border-slate-800/60 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm">DI</div>
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm" id="sidebar-avatar-initial">DI</div>
                     <div>
                         <h1 class="text-sm font-bold text-white tracking-wide uppercase">DASHBOARD IZIN</h1>
                         <span id="role-badge" class="text-[10px] text-slate-400">Loading...</span>
                     </div>
                 </div>
 
-                <!-- MENU SIDEBAR DENGAN NAMA BARU DAN HURUF KAPITAL -->
                 <nav class="p-4 space-y-1">
                     <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
                         <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD
@@ -89,7 +86,6 @@
                         <i class="fa-solid fa-business-time w-5 text-center text-red-400"></i> TELAT DOC IZIN
                     </button>
                     
-                    <!-- MENU SETTING KHUSUS ADMIN (Otomatis Hilang Jika Staff yang Login) -->
                     <div id="admin-divider" class="pt-4 pb-1 px-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-t border-slate-800/60 mt-4">ADMIN AREA ONLY</div>
                     
                     <button id="btn-nav-settings" onclick="switchTab('settings')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
@@ -107,13 +103,23 @@
 
         <!-- ================= MAIN CONTENT SPACE ================= -->
         <main class="flex-1 flex flex-col bg-[#030712] overflow-hidden">
+            <!-- HEADER YANG SUDAH DITAMBAHKAN TOMBOL LOGOUT DI KANAN ATAS (Sesuai image_ad72e2.png) -->
             <header class="h-16 border-b border-slate-800 bg-luxury-dark/50 backdrop-blur px-8 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-slate-400">
                     Sistem / <span id="breadcrumb-child" class="text-white font-medium">DASHBOARD</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
+                    <span id="user-greeting" class="text-sm font-semibold text-sky-400 text-glow-blue">Halo, Staff!</span>
                     <span class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50" id="current-time-display">Loading Date...</span>
-                    <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">A</div>
+                    
+                    <!-- AREA ACTION AVATAR + TOMBOL LOGOUT SEBELAH KANAN (Tanda Panah Merah) -->
+                    <div class="flex items-center gap-2 bg-slate-900/60 p-1 pr-3 rounded-full border border-slate-800">
+                        <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">A</div>
+                        <!-- Tombol Keluar Akun Cepat -->
+                        <button onclick="handleLogout()" title="Keluar dari Sistem" class="text-slate-400 hover:text-red-400 transition pl-1">
+                            <i class="fa-solid fa-power-off text-sm"></i>
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -142,20 +148,20 @@
                     </div>
                 </section>
 
-                <!-- TAB 2: IZIN KELUAR (Waktu berjalan mundur 15 menit dari sini setelah klik ajukan) -->
+                <!-- TAB 2: IZIN KELUAR -->
                 <section id="tab-izin" class="hidden max-w-xl mx-auto bg-luxury-dark border border-slate-800 rounded-2xl p-8 space-y-6">
                     <div class="border-b border-slate-800 pb-4">
                         <h3 class="text-lg font-bold text-white tracking-wide text-center">Formulir Pengajuan Izin Keluar</h3>
-                        <p class="text-xs text-slate-400 text-center mt-1">Waktu hitung mundur 15 menit akan dimulai tepat setelah data dikirim.</p>
+                        <p class="text-xs text-slate-400 text-center mt-1">Sistem otomatis mengunci nama Anda berdasarkan akun login saat ini.</p>
                     </div>
                     
                     <form onsubmit="startIzinTimer(event)" class="space-y-5">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Nama Karyawan</label>
-                            <select id="form-select-name" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition"></select>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Karyawan (Otomatis Terkunci)</label>
+                            <input type="text" id="form-staff-name" readonly class="w-full bg-[#030712] border border-slate-800 rounded-xl px-4 py-3 text-emerald-400 font-bold focus:outline-none cursor-not-allowed" value="">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Jobdesk Kerja</label>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Jenis Jobdesk</label>
                             <select id="form-select-job" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition"></select>
                         </div>
                         <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-xs space-y-1 text-slate-400">
@@ -193,23 +199,25 @@
                     </div>
                 </section>
 
-                <!-- TAB 4: PENGATURAN SISTEM (Hanya Gana yang Bisa Buka) -->
+                <!-- TAB 4: PENGATURAN SISTEM -->
                 <section id="tab-settings" class="hidden space-y-8">
                     <!-- Registrasi Akun Staff -->
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
                         <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-emerald-400">
                             <i class="fa-solid fa-user-shield mr-2"></i>Otoritas & Registrasi Akun Login Staff
                         </h4>
-                        <form onsubmit="addStaffAccount(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-[#060b14] p-4 rounded-xl border border-slate-800">
-                            <input type="text" id="reg-staff-user" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Username Staff...">
-                            <input type="text" id="reg-staff-pass" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Password Staff...">
-                            <input type="text" id="reg-staff-ip" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="IP Login (Contoh: 192.168.1.100)">
+                        <form onsubmit="addStaffAccount(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-[#060b14] p-4 rounded-xl border border-slate-800">
+                            <input type="text" id="reg-staff-fullname" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Nama Lengkap Staff...">
+                            <input type="text" id="reg-staff-user" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Username...">
+                            <input type="text" id="reg-staff-pass" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Password...">
+                            <input type="text" id="reg-staff-ip" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="IP Address">
                             <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl py-2 transition">Buat Akun Staff</button>
                         </form>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs border-collapse">
                                 <thead>
                                     <tr class="text-slate-400 border-b border-slate-800">
+                                        <th class="py-2">Nama Lengkap</th>
                                         <th class="py-2">Username</th>
                                         <th class="py-2">Password</th>
                                         <th class="py-2">Otoritas IP Address</th>
@@ -222,14 +230,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
-                            <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-sky-400"><i class="fa-solid fa-user-gear mr-2"></i>Daftar Pilihan Nama Karyawan</h4>
-                            <form onsubmit="addKaryawanMaster(event)" class="flex gap-2">
-                                <input type="text" id="input-master-name" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-sky-500" placeholder="Tambah Nama Baru...">
-                                <input type="submit" value="Tambah" class="bg-sky-600 hover:bg-sky-500 text-white px-4 rounded-xl text-xs font-semibold cursor-pointer">
-                            </form>
-                            <ul id="list-master-names" class="text-xs divide-y divide-slate-800/60 max-h-48 overflow-y-auto"></ul>
-                        </div>
                         <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
                             <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-purple-400"><i class="fa-solid fa-briefcase mr-2"></i>Daftar Pilihan Jenis Jobdesk</h4>
                             <form onsubmit="addJobdeskMaster(event)" class="flex gap-2">
@@ -258,20 +258,20 @@
             localStorage.setItem(key, JSON.stringify(value));
         }
 
-        let masterNames = getStorage('db_master_names', ['Budi Setiawan', 'Andi Wijaya', 'Siti Rahma', 'Rian Hidayat']);
         let masterJobs = getStorage('db_master_jobs', ['UI/UX Designer', 'Front-End Developer', 'Back-End Developer', 'Content Admin']);
         let activePermits = getStorage('db_active_permits', []);
         let archivedReports = getStorage('db_archived_reports', []);
-        let loginUser = localStorage.getItem('db_current_login') || null;
+        let currentUserSession = getStorage('db_user_session', null);
 
         let staffAccounts = getStorage('db_staff_accounts', [
-            { user: 'staff1', pass: '123', ip: '192.168.1.100' }
+            { fullname: 'Elisa', user: 'elisa', pass: '123', ip: '192.168.1.100' },
+            { fullname: 'Budi Wijaya', user: 'budi', pass: '123', ip: '192.168.1.100' }
         ]);
 
         let systemClockInterval = null;
 
         window.onload = function() {
-            if (loginUser) {
+            if (currentUserSession) {
                 applyInterfaceSecurity();
             }
         };
@@ -283,54 +283,58 @@
             const p = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error-msg');
             
-            errorDiv.classList.add('hidden'); // Reset pesan error
+            errorDiv.classList.add('hidden');
 
-            // 1. Validasi Admin Gana
             if (u === 'gana' && p === '1') {
-                loginUser = 'gana';
+                currentUserSession = { username: 'gana', fullname: 'Gana (Owner)' };
             } 
-            // 2. Validasi Akun Staff Dinamis
             else {
                 const matchedStaff = staffAccounts.find(acc => acc.user === u && acc.pass === p);
                 if (matchedStaff) {
                     if (matchedStaff.ip === CURRENT_CLIENT_IP) {
-                        loginUser = u;
+                        currentUserSession = { username: matchedStaff.user, fullname: matchedStaff.fullname };
                     } else {
                         errorDiv.innerText = `❌ IP Address (${CURRENT_CLIENT_IP}) tidak diizinkan untuk akun ini!`;
                         errorDiv.classList.remove('hidden');
                         return;
                     }
                 } else {
-                    // PESAN ERROR DI BAWAH KOTAK LOGIN (Sesuai Request)
                     errorDiv.innerText = "❌ Maaf, Username atau Password yang Anda masukkan salah!";
                     errorDiv.classList.remove('hidden');
                     return;
                 }
             }
 
-            localStorage.setItem('db_current_login', loginUser);
+            setStorage('db_user_session', currentUserSession);
             applyInterfaceSecurity();
         }
 
-        // PENGATURAN TAMPILAN SIDEBAR BERDASARKAN USER LOG IN
+        // INTERFACE CONTROLLER
         function applyInterfaceSecurity() {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
-            document.getElementById('avatar-initial').innerText = loginUser === 'gana' ? 'G' : 'S';
-            document.getElementById('role-badge').innerText = loginUser === 'gana' ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
-            document.getElementById('role-badge').className = loginUser === 'gana' ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
+            
+            const initial = currentUserSession.fullname.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = initial;
+            document.getElementById('sidebar-avatar-initial').innerText = initial;
+            document.getElementById('user-greeting').innerText = `Halo, ${currentUserSession.fullname}! Selamat Bekerja.`;
+
+            const isGana = currentUserSession.username === 'gana';
+            document.getElementById('role-badge').innerText = isGana ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
+            document.getElementById('role-badge').className = isGana ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
 
             const settingsBtn = document.getElementById('btn-nav-settings');
             const adminDiv = document.getElementById('admin-divider');
 
-            // Proteksi Sidebar: Jika bukan Gana, sembunyikan menu pengaturan sistem sepenuhnya!
-            if (loginUser === 'gana') {
+            document.getElementById('form-staff-name').value = currentUserSession.fullname;
+
+            if (isGana) {
                 if(settingsBtn) settingsBtn.classList.remove('hidden');
                 if(adminDiv) adminDiv.classList.remove('hidden');
             } else {
                 if(settingsBtn) settingsBtn.classList.add('hidden');
                 if(adminDiv) adminDiv.classList.add('hidden');
-                switchTab('dashboard'); // Pastikan staff mulai dari dashboard utama
+                switchTab('dashboard'); 
             }
 
             initDropdownsAndLists();
@@ -340,8 +344,8 @@
         }
 
         function handleLogout() {
-            loginUser = null;
-            localStorage.removeItem('db_current_login');
+            currentUserSession = null;
+            localStorage.removeItem('db_user_session');
             clearInterval(systemClockInterval);
             document.getElementById('login-form').reset();
             document.getElementById('login-error-msg').classList.add('hidden');
@@ -350,8 +354,7 @@
         }
 
         function switchTab(target) {
-            // Blokir akses url/tab paksa bagi staff
-            if (target === 'settings' && loginUser !== 'gana') {
+            if (target === 'settings' && currentUserSession.username !== 'gana') {
                 alert('⛔ MENU RAHASIA! Hanya bisa dibuka oleh Admin Gana.');
                 return;
             }
@@ -370,7 +373,7 @@
             document.getElementById('breadcrumb-child').innerText = target.toUpperCase() === 'REPORT' ? 'TELAT DOC IZIN' : target.toUpperCase() === 'IZIN' ? 'IZIN KELUAR' : target.toUpperCase();
         }
 
-        // SISTEM ENGINE TIMER JALAN MUNDUR (Dimulai dari 15 Menit saat data di-submit)
+        // TIMER ENGINE 15 MENIT MUNDUR
         function startSystemEngine() {
             if(systemClockInterval) clearInterval(systemClockInterval);
             systemClockInterval = setInterval(() => {
@@ -378,14 +381,14 @@
 
                 activePermits.forEach(p => {
                     if (p.status === 'Berjalan') {
-                        p.sisaDetik--; // Hitung mundur berkurang setiap 1 detik dari 900 detik (15 Menit)
+                        p.sisaDetik--;
                         if (p.sisaDetik <= 0) { 
                             p.status = 'Terlambat'; 
                             p.sisaDetik = 0; 
                             statusUpdated = true; 
                         }
                     } else if (p.status === 'Terlambat') {
-                        p.totalWaktuTelatDetik++; // Hitung kelipatan waktu keterlambatan (Overtime)
+                        p.totalWaktuTelatDetik++;
                         statusUpdated = true;
                     }
                 });
@@ -399,18 +402,17 @@
 
         function startIzinTimer(event) {
             event.preventDefault();
-            const namaSelected = document.getElementById('form-select-name').value;
+            const namaSelected = document.getElementById('form-staff-name').value;
             const jobSelected = document.getElementById('form-select-job').value;
 
             if (activePermits.some(p => p.nama === namaSelected)) {
-                alert(`Karyawan ${namaSelected} saat ini masih berada di luar sistem!`);
+                alert(`Anda (${namaSelected}) saat ini masih memiliki dokumen izin aktif yang berjalan di luar!`);
                 return;
             }
 
             const jamSkrg = new Date();
             const jamStr = `${String(jamSkrg.getHours()).padStart(2, '0')}:${String(jamSkrg.getMinutes()).padStart(2, '0')} WIB`;
             
-            // PENTING: 900 Detik = Kunci Otomatis Durasi 15 Menit Hitung Mundur Kebawah
             activePermits.unshift({
                 id: Date.now(),
                 tanggal: jamSkrg.toISOString().split('T')[0],
@@ -423,9 +425,8 @@
             });
 
             setStorage('db_active_permits', activePermits);
-            alert(`Izin Berhasil! Timer hitung mundur 15 menit dimulai untuk ${namaSelected}.`);
+            alert(`Izin Berhasil! Timer hitung mundur 15 menit dimulai.`);
             
-            document.getElementById('form-select-name').selectedIndex = 0;
             document.getElementById('form-select-job').selectedIndex = 0;
             switchTab('dashboard');
             renderActiveMonitors();
@@ -505,24 +506,26 @@
             });
         }
 
-        // AKUN STAFF MANAGEMENT
+        // REGISTRASI AKUN STAFF MANAGEMENT
         function addStaffAccount(event) {
             event.preventDefault();
+            const fnInput = document.getElementById('reg-staff-fullname').value.trim();
             const uInput = document.getElementById('reg-staff-user').value.trim();
             const pInput = document.getElementById('reg-staff-pass').value.trim();
             const ipInput = document.getElementById('reg-staff-ip').value.trim();
 
             if(uInput === 'gana') { alert('Username "gana" dilindungi sistem!'); return; }
-            if(staffAccounts.some(a => a.user === uInput)) { alert('Username sudah ada!'); return; }
+            if(staffAccounts.some(a => a.user === uInput)) { alert('Username sudah terpakai!'); return; }
 
-            staffAccounts.push({ user: uInput, pass: pInput, ip: ipInput });
+            staffAccounts.push({ fullname: fnInput, user: uInput, pass: pInput, ip: ipInput });
             setStorage('db_staff_accounts', staffAccounts);
             
+            document.getElementById('reg-staff-fullname').value = '';
             document.getElementById('reg-staff-user').value = '';
             document.getElementById('reg-staff-pass').value = '';
             document.getElementById('reg-staff-ip').value = '';
             
-            alert(`Akun Staff (${uInput}) berhasil disimpan.`);
+            alert(`Akun Staff untuk ${fnInput} berhasil dibuat.`);
             initDropdownsAndLists();
         }
 
@@ -535,19 +538,9 @@
         }
 
         function initDropdownsAndLists() {
-            const selectName = document.getElementById('form-select-name');
-            selectName.innerHTML = '<option value="" disabled selected>-- Pilih Nama Personil --</option>';
-            masterNames.forEach(n => selectName.innerHTML += `<option value="${n}">${n}</option>`);
-
             const selectJob = document.getElementById('form-select-job');
             selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
             masterJobs.forEach(j => selectJob.innerHTML += `<option value="${j}">${j}</option>`);
-
-            const ulNames = document.getElementById('list-master-names');
-            ulNames.innerHTML = '';
-            masterNames.forEach((n, i) => {
-                ulNames.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${n} <button onclick="removeMasterData('name', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
-            });
 
             const ulJobs = document.getElementById('list-master-jobs');
             ulJobs.innerHTML = '';
@@ -560,7 +553,8 @@
             staffAccounts.forEach((acc, i) => {
                 tbodyStaff.innerHTML += `
                     <tr class="hover:bg-slate-900/40">
-                        <td class="py-2 font-mono font-bold text-emerald-400">${acc.user}</td>
+                        <td class="py-2 font-semibold text-white">${acc.fullname}</td>
+                        <td class="py-2 font-mono text-emerald-400">${acc.user}</td>
                         <td class="py-2 font-mono">•••••• (${acc.pass})</td>
                         <td class="py-2 text-slate-400 font-mono">${acc.ip}</td>
                         <td class="py-2 text-right">
@@ -594,11 +588,6 @@
         function filterReportByDate() { renderReportTable(document.getElementById('filter-date-input').value); }
         function clearDateFilter() { document.getElementById('filter-date-input').value = ''; renderReportTable(); }
 
-        function addKaryawanMaster(event) {
-            event.preventDefault(); const input = document.getElementById('input-master-name'); const val = input.value.trim();
-            if(masterNames.includes(val)) return; masterNames.push(val); setStorage('db_master_names', masterNames);
-            input.value = ''; initDropdownsAndLists();
-        }
         function addJobdeskMaster(event) {
             event.preventDefault(); const input = document.getElementById('input-master-job'); const val = input.value.trim();
             if(masterJobs.includes(val)) return; masterJobs.push(val); setStorage('db_master_jobs', masterJobs);
@@ -606,7 +595,6 @@
         }
         function removeMasterData(type, idx) {
             if (confirm('Hapus data master?')) {
-                if (type === 'name') { masterNames.splice(idx, 1); setStorage('db_master_names', masterNames); }
                 if (type === 'job') { masterJobs.splice(idx, 1); setStorage('db_master_jobs', masterJobs); }
                 initDropdownsAndLists();
             }
