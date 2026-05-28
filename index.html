@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Permission Control Dashboard</title>
-    <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -28,7 +26,17 @@
 </head>
 <body class="h-screen overflow-hidden">
 
-    <!-- ================= 1. LOGIN SCREEN ================= -->
+    <script>
+        (function() {
+            const session = localStorage.getItem('db_user_session');
+            if (session) {
+                const style = document.createElement('style');
+                style.innerHTML = '#login-screen { display: none !important; } #main-layout { display: flex !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#030712] px-4">
         <div class="bg-luxury-dark border border-slate-800 p-8 rounded-2xl w-full max-w-md box-glow-blue text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sky-500/10 text-sky-400 mb-4 border border-sky-500/20">
@@ -53,22 +61,19 @@
                 <button type="submit" class="w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-semibold py-3 rounded-xl transition shadow-lg mt-4">
                     Masuk Ke Sistem
                 </button>
-                
                 <div id="login-error-msg" class="hidden text-xs bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-3 text-center font-medium mt-3 animate-pulse">
-                    <i class="fa-solid fa-circle-xmark mr-1"></i> Maaf, Username atau Password yang Anda masukkan salah!
+                    <i class="fa-solid fa-circle-xmark mr-1"></i> Kredensial yang Anda masukkan salah!
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ================= MAIN CORE LAYOUT ================= -->
     <div id="main-layout" class="hidden h-full flex">
         
-        <!-- ================= 2. SIDEBAR MENU ================= -->
         <aside class="w-64 bg-luxury-dark border-r border-slate-800 flex flex-col justify-between">
             <div>
                 <div class="p-6 border-b border-slate-800/60 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm" id="sidebar-avatar-initial">DI</div>
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white font-bold text-sm" id="sidebar-avatar-initial">G</div>
                     <div>
                         <h1 class="text-sm font-bold text-white tracking-wide uppercase">DASHBOARD IZIN</h1>
                         <span id="role-badge" class="text-[10px] text-slate-400">Loading...</span>
@@ -76,10 +81,10 @@
                 </div>
 
                 <nav class="p-4 space-y-1">
-                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
-                        <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD
+                    <button onclick="switchTab('dashboard')" id="btn-nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD MONITOR
                     </button>
-                    <button onclick="switchTab('izin')" id="btn-nav-izin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
+                    <button onclick="switchTab('izin')" id="btn-nav-izin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-sky-400 bg-sky-500/10">
                         <i class="fa-solid fa-square-plus w-5 text-center"></i> IZIN KELUAR
                     </button>
                     <button onclick="switchTab('report')" id="btn-nav-report" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold tracking-wide transition text-slate-400 hover:text-white hover:bg-slate-800/40">
@@ -94,7 +99,6 @@
                 </nav>
             </div>
 
-            <!-- Tombol Logout Tambahan di Kiri Bawah -->
             <div class="p-4 border-t border-slate-800/60">
                 <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-red-500/20 text-red-400 bg-red-500/5 hover:bg-red-500/10 transition">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i> KELUAR AKUN
@@ -102,22 +106,18 @@
             </div>
         </aside>
 
-        <!-- ================= MAIN CONTENT SPACE ================= -->
         <main class="flex-1 flex flex-col bg-[#030712] overflow-hidden">
             
-            <!-- HEADER DENGAN TOMBOL LOGOUT SEBELAH KANAN -->
             <header class="h-16 border-b border-slate-800 bg-luxury-dark/50 backdrop-blur px-8 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-slate-400">
-                    Sistem / <span id="breadcrumb-child" class="text-white font-medium">DASHBOARD</span>
+                    Sistem / <span id="breadcrumb-child" class="text-white font-medium">IZIN KELUAR</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span id="user-greeting" class="text-sm font-semibold text-sky-400 text-glow-blue">Halo, Staff!</span>
+                    <span id="user-greeting" class="text-sm font-semibold text-sky-400 text-glow-blue">Halo...</span>
                     <span class="text-xs text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50" id="current-time-display">Loading Date...</span>
                     
-                    <!-- AREA AVATAR + TOMBOL LOGOUT PREMIUM (FA-POWER-OFF) -->
                     <div class="flex items-center gap-2 bg-slate-900/60 p-1 pr-3 rounded-full border border-slate-800">
-                        <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">A</div>
-                        <!-- Tombol Keluar Akun Cepat Pojok Kanan Atas -->
+                        <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white text-xs font-bold border border-sky-400" id="avatar-initial">G</div>
                         <button onclick="handleLogout()" title="Keluar dari Sistem" class="text-slate-400 hover:text-red-400 transition pl-1">
                             <i class="fa-solid fa-power-off text-sm"></i>
                         </button>
@@ -125,22 +125,66 @@
                 </div>
             </header>
 
-            <div class="flex-1 p-8 overflow-y-auto">
+            <div class="flex-1 p-8 overflow-y-auto space-y-6">
 
-                <!-- TAB 1: DASHBOARD MONITOR UTAMA -->
-                <section id="tab-dashboard" class="space-y-6">
-                    <div id="active-timers-wrapper" class="space-y-4"></div>
+                <section id="tab-izin" class="max-w-4xl mx-auto space-y-6">
+                    
+                    <div class="bg-luxury-dark/40 border border-slate-800/80 rounded-2xl p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <i class="fa-solid fa-users-viewfinder text-sky-400 animate-pulse"></i> Karyawan Sedang Di Luar (Izin Aktif)
+                            </h4>
+                            <span id="active-count-badge" class="text-[11px] font-bold bg-sky-500/10 border border-sky-500/20 text-sky-400 px-2.5 py-0.5 rounded-full">0 Aktif</span>
+                        </div>
+                        
+                        <div id="live-queue-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div id="empty-queue-msg" class="col-span-full py-6 text-center text-xs text-slate-500 font-medium bg-[#060b14]/50 border border-dashed border-slate-800 rounded-xl">
+                                <i class="fa-solid fa-mug-hot mr-1.5"></i> Seluruh staff berada di dalam ruangan / Standby.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-8 max-w-xl mx-auto space-y-6 box-glow-blue">
+                        <div class="text-center border-b border-slate-800 pb-4">
+                            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1"><i class="fa-regular fa-clock mr-1"></i> Waktu Sekarang (Real-Time)</div>
+                            <div id="live-large-clock" class="text-3xl font-mono font-bold text-sky-400 text-glow-blue tracking-wider mb-4">00:00:00</div>
+                            
+                            <h3 class="text-base font-bold text-white tracking-wide">Formulir Pengajuan Izin Keluar</h3>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Sistem otomatis mengunci nama Anda berdasarkan akun login saat ini.</p>
+                        </div>
+                        
+                        <form onsubmit="startIzinTimer(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Karyawan (Terkunci)</label>
+                                <input type="text" id="form-staff-name" readonly class="w-full bg-[#030712] border border-slate-800 rounded-xl px-4 py-3 text-emerald-400 font-bold focus:outline-none cursor-not-allowed text-sm" value="">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Jenis Jobdesk</label>
+                                <select id="form-select-job" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 text-sm transition"></select>
+                            </div>
+                            <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-3.5 text-xs space-y-1 text-slate-400 font-medium">
+                                <div class="flex justify-between"><span>Standar Alokasi Batas Waktu:</span><span class="text-amber-400 font-bold">15 Menit Mundur</span></div>
+                                <div class="flex justify-between"><span>Konsekuensi Keterlambatan:</span><span class="text-red-400 font-medium">Otomatis Terdata di Dokumen Telat</span></div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-semibold py-3.5 rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play text-xs"></i> Ajukan Izin & Mulai Timer
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="tab-dashboard" class="hidden space-y-6">
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl overflow-hidden">
-                        <div class="p-6 border-b border-slate-800"><h4 class="text-base font-bold text-white tracking-wide">Aktivitas Monitor Izin Hari Ini</h4></div>
+                        <div class="p-6 border-b border-slate-800"><h4 class="text-base font-bold text-white tracking-wide">Tabel Kontrol Aktivitas Hari Ini</h4></div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-900/40 text-slate-400 text-xs font-semibold uppercase border-b border-slate-800">
                                         <th class="px-6 py-4">Nama Personil</th>
                                         <th class="px-6 py-4">Jobdesk</th>
-                                        <th class="px-6 py-4">Jam Ambil Izin</th>
-                                        <th class="px-6 py-4">Sisa Waktu Mundur</th>
-                                        <th class="px-6 py-4">Status</th>
+                                        <th class="px-6 py-4">Jam Keluar</th>
+                                        <th class="px-6 py-4">Status Waktu</th>
                                         <th class="px-6 py-4">Aksi</th>
                                     </tr>
                                 </thead>
@@ -150,35 +194,9 @@
                     </div>
                 </section>
 
-                <!-- TAB 2: IZIN KELUAR -->
-                <section id="tab-izin" class="hidden max-w-xl mx-auto bg-luxury-dark border border-slate-800 rounded-2xl p-8 space-y-6">
-                    <div class="border-b border-slate-800 pb-4">
-                        <h3 class="text-lg font-bold text-white tracking-wide text-center">Formulir Pengajuan Izin Keluar</h3>
-                        <p class="text-xs text-slate-400 text-center mt-1">Sistem otomatis mengunci nama Anda berdasarkan akun login saat ini.</p>
-                    </div>
-                    
-                    <form onsubmit="startIzinTimer(event)" class="space-y-5">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Karyawan (Otomatis Terkunci)</label>
-                            <input type="text" id="form-staff-name" readonly class="w-full bg-[#030712] border border-slate-800 rounded-xl px-4 py-3 text-emerald-400 font-bold focus:outline-none cursor-not-allowed" value="">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Jenis Jobdesk</label>
-                            <select id="form-select-job" required class="w-full bg-[#060b14] border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition"></select>
-                        </div>
-                        <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-xs space-y-1 text-slate-400">
-                            <div class="flex justify-between"><span>Standar Alokasi Batas Waktu:</span><span class="text-amber-400 font-bold">15 Menit Mundur</span></div>
-                        </div>
-                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-semibold py-3 rounded-xl transition shadow-lg">Ajukan Izin & Mulai Timer</button>
-                    </form>
-                </section>
-
-                <!-- TAB 3: TELAT DOC IZIN -->
                 <section id="tab-report" class="hidden space-y-6">
-                    <div class="bg-luxury-dark border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-white tracking-wide"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i>Log Data Overtime (Doc Telat Karyawan)</h3>
-                        </div>
+                    <div class="bg-luxury-dark border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+                        <h3 class="text-base font-bold text-white tracking-wide"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i>Log Data Overtime (Doc Telat Karyawan)</h3>
                         <div class="flex items-center gap-2">
                             <input type="date" id="filter-date-input" onchange="filterReportByDate()" class="bg-[#060b14] border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500">
                             <button onclick="clearDateFilter()" class="bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 px-3 py-1.5 rounded-lg">Clear</button>
@@ -191,9 +209,9 @@
                                     <th class="px-6 py-4">Tanggal</th>
                                     <th class="px-6 py-4">Nama Personil</th>
                                     <th class="px-6 py-4">Jobdesk</th>
-                                    <th class="px-6 py-4">Jam Mulai Keluar</th>
-                                    <th class="px-6 py-4 text-center">Total Durasi Terlambat</th>
-                                    <th class="px-6 py-4">Keterangan</th>
+                                    <th class="px-6 py-4">Jam Keluar</th>
+                                    <th class="px-6 py-4">Total Keterlambatan</th>
+                                    <th class="px-6 py-4">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="report-table-body" class="text-sm divide-y divide-slate-800/50 text-slate-300"></tbody>
@@ -201,18 +219,16 @@
                     </div>
                 </section>
 
-                <!-- TAB 4: PENGATURAN SISTEM -->
                 <section id="tab-settings" class="hidden space-y-8">
-                    <!-- Registrasi Akun Staff -->
                     <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
                         <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-emerald-400">
                             <i class="fa-solid fa-user-shield mr-2"></i>Otoritas & Registrasi Akun Login Staff
                         </h4>
                         <form onsubmit="addStaffAccount(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-[#060b14] p-4 rounded-xl border border-slate-800">
-                            <input type="text" id="reg-staff-fullname" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Nama Lengkap Staff...">
-                            <input type="text" id="reg-staff-user" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Username...">
-                            <input type="text" id="reg-staff-pass" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="Password...">
-                            <input type="text" id="reg-staff-ip" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" placeholder="IP Address">
+                            <input type="text" id="reg-staff-fullname" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="Nama Lengkap Staff...">
+                            <input type="text" id="reg-staff-user" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="Username...">
+                            <input type="text" id="reg-staff-pass" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="Password...">
+                            <input type="text" id="reg-staff-ip" required class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none" placeholder="IP Address">
                             <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl py-2 transition">Buat Akun Staff</button>
                         </form>
                         <div class="overflow-x-auto">
@@ -222,7 +238,7 @@
                                         <th class="py-2">Nama Lengkap</th>
                                         <th class="py-2">Username</th>
                                         <th class="py-2">Password</th>
-                                        <th class="py-2">Otoritas IP Address</th>
+                                        <th class="py-2">Otoritas IP</th>
                                         <th class="py-2 text-right">Aksi</th>
                                     </tr>
                                 </thead>
@@ -231,15 +247,13 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4">
-                            <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-purple-400"><i class="fa-solid fa-briefcase mr-2"></i>Daftar Pilihan Jenis Jobdesk</h4>
-                            <form onsubmit="addJobdeskMaster(event)" class="flex gap-2">
-                                <input type="text" id="input-master-job" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500" placeholder="Tambah Jobdesk Baru...">
-                                <input type="submit" value="Tambah" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl text-xs font-semibold cursor-pointer">
-                            </form>
-                            <ul id="list-master-jobs" class="text-xs divide-y divide-slate-800/60 max-h-48 overflow-y-auto"></ul>
-                        </div>
+                    <div class="bg-luxury-dark border border-slate-800 rounded-2xl p-6 space-y-4 max-w-md">
+                        <h4 class="text-sm font-bold text-white tracking-wide uppercase border-b border-slate-800 pb-2 text-purple-400"><i class="fa-solid fa-briefcase mr-2"></i>Daftar Pilihan Jenis Jobdesk</h4>
+                        <form onsubmit="addJobdeskMaster(event)" class="flex gap-2">
+                            <input type="text" id="input-master-job" required class="flex-1 bg-[#060b14] border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none" placeholder="Tambah Jobdesk Baru...">
+                            <input type="submit" value="Tambah" class="bg-purple-600 hover:bg-purple-500 text-white px-4 rounded-xl text-xs font-semibold cursor-pointer">
+                        </form>
+                        <ul id="list-master-jobs" class="text-xs divide-y divide-slate-800/60 max-h-48 overflow-y-auto"></ul>
                     </div>
                 </section>
 
@@ -247,7 +261,6 @@
         </main>
     </div>
 
-    <!-- ================= ENGINE CONTROLLER LOGIC ================= -->
     <script>
         const CURRENT_CLIENT_IP = "192.168.1.100"; 
         document.getElementById('detected-ip').innerText = CURRENT_CLIENT_IP;
@@ -275,6 +288,8 @@
         window.onload = function() {
             if (currentUserSession) {
                 applyInterfaceSecurity();
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
             }
         };
 
@@ -284,24 +299,22 @@
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error-msg');
-            
             errorDiv.classList.add('hidden');
 
             if (u === 'gana' && p === '1') {
                 currentUserSession = { username: 'gana', fullname: 'Gana (Owner)' };
-            } 
-            else {
+            } else {
                 const matchedStaff = staffAccounts.find(acc => acc.user === u && acc.pass === p);
                 if (matchedStaff) {
                     if (matchedStaff.ip === CURRENT_CLIENT_IP) {
                         currentUserSession = { username: matchedStaff.user, fullname: matchedStaff.fullname };
                     } else {
-                        errorDiv.innerText = `❌ IP Address (${CURRENT_CLIENT_IP}) tidak diizinkan untuk akun ini!`;
+                        errorDiv.innerText = `❌ IP Address (${CURRENT_CLIENT_IP}) tidak diotorisasi!`;
                         errorDiv.classList.remove('hidden');
                         return;
                     }
                 } else {
-                    errorDiv.innerText = "❌ Maaf, Username atau Password yang Anda masukkan salah!";
+                    errorDiv.innerText = "❌ Username atau Password salah!";
                     errorDiv.classList.remove('hidden');
                     return;
                 }
@@ -311,9 +324,9 @@
             applyInterfaceSecurity();
         }
 
-        // INTERFACE CONTROLLER
         function applyInterfaceSecurity() {
-            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('login-screen').style.setProperty('display', 'none', 'important');
+            document.getElementById('main-layout').style.setProperty('display', 'flex', 'important');
             document.getElementById('main-layout').classList.remove('hidden');
             
             const initial = currentUserSession.fullname.charAt(0).toUpperCase();
@@ -323,7 +336,6 @@
 
             const isGana = currentUserSession.username === 'gana';
             document.getElementById('role-badge').innerText = isGana ? '🛡️ Owner / Admin System' : '👤 Karyawan / Staff';
-            document.getElementById('role-badge').className = isGana ? 'text-[10px] text-amber-400 font-bold' : 'text-[10px] text-slate-400';
 
             const settingsBtn = document.getElementById('btn-nav-settings');
             const adminDiv = document.getElementById('admin-divider');
@@ -336,11 +348,10 @@
             } else {
                 if(settingsBtn) settingsBtn.classList.add('hidden');
                 if(adminDiv) adminDiv.classList.add('hidden');
-                switchTab('dashboard'); 
             }
 
             initDropdownsAndLists();
-            renderActiveMonitors();
+            renderLiveQueueAndMonitors();
             renderReportTable();
             startSystemEngine();
         }
@@ -349,18 +360,22 @@
             currentUserSession = null;
             localStorage.removeItem('db_user_session');
             clearInterval(systemClockInterval);
+            
+            const customStyles = document.querySelectorAll('head style');
+            customStyles.forEach(s => { if(s.innerHTML.includes('#login-screen')) s.remove(); });
+
             document.getElementById('login-form').reset();
             document.getElementById('login-error-msg').classList.add('hidden');
+            document.getElementById('main-layout').style.removeAttribute('display');
             document.getElementById('main-layout').classList.add('hidden');
+            document.getElementById('login-screen').style.removeAttribute('display');
             document.getElementById('login-screen').classList.remove('hidden');
         }
 
         function switchTab(target) {
             if (target === 'settings' && currentUserSession.username !== 'gana') {
-                alert('⛔ MENU RAHASIA! Hanya bisa dibuka oleh Admin Gana.');
-                return;
+                alert('Hanya bisa dibuka oleh Admin Gana.'); return;
             }
-
             const tabs = ['dashboard', 'izin', 'report', 'settings'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -375,19 +390,21 @@
             document.getElementById('breadcrumb-child').innerText = target.toUpperCase() === 'REPORT' ? 'TELAT DOC IZIN' : target.toUpperCase() === 'IZIN' ? 'IZIN KELUAR' : target.toUpperCase();
         }
 
-        // TIMER ENGINE 15 MENIT MUNDUR
+        // TIMER & REALTIME ENGINE (15 MENIT MUNDUR)
         function startSystemEngine() {
             if(systemClockInterval) clearInterval(systemClockInterval);
             systemClockInterval = setInterval(() => {
-                let statusUpdated = false;
+                // Jam digital real-time besar di atas formulir
+                let skrg = new Date();
+                document.getElementById('live-large-clock').innerText = 
+                    `${String(skrg.getHours()).padStart(2, '0')}:${String(skrg.getMinutes()).padStart(2, '0')}:${String(skrg.getSeconds()).padStart(2, '0')}`;
 
+                let statusUpdated = false;
                 activePermits.forEach(p => {
                     if (p.status === 'Berjalan') {
                         p.sisaDetik--;
                         if (p.sisaDetik <= 0) { 
-                            p.status = 'Terlambat'; 
-                            p.sisaDetik = 0; 
-                            statusUpdated = true; 
+                            p.status = 'Terlambat'; p.sisaDetik = 0; statusUpdated = true; 
                         }
                     } else if (p.status === 'Terlambat') {
                         p.totalWaktuTelatDetik++;
@@ -397,7 +414,7 @@
 
                 if (statusUpdated || activePermits.length > 0) {
                     setStorage('db_active_permits', activePermits);
-                    renderActiveMonitors();
+                    renderLiveQueueAndMonitors();
                 }
             }, 1000);
         }
@@ -408,36 +425,35 @@
             const jobSelected = document.getElementById('form-select-job').value;
 
             if (activePermits.some(p => p.nama === namaSelected)) {
-                alert(`Anda (${namaSelected}) saat ini masih memiliki dokumen izin aktif yang berjalan di luar!`);
+                alert(`Anda (${namaSelected}) masih terdata di luar! Klik 'End Time' di atas jika sudah kembali.`);
                 return;
             }
 
             const jamSkrg = new Date();
             const jamStr = `${String(jamSkrg.getHours()).padStart(2, '0')}:${String(jamSkrg.getMinutes()).padStart(2, '0')} WIB`;
             
-            activePermits.unshift({
+            activePermits.push({
                 id: Date.now(),
                 tanggal: jamSkrg.toISOString().split('T')[0],
                 nama: namaSelected,
                 jobdesk: jobSelected,
                 jamKeluar: jamStr,
-                sisaDetik: 900, 
+                sisaDetik: 900, // 15 Menit penuh
                 totalWaktuTelatDetik: 0,
                 status: 'Berjalan'
             });
 
             setStorage('db_active_permits', activePermits);
-            alert(`Izin Berhasil! Timer hitung mundur 15 menit dimulai.`);
-            
             document.getElementById('form-select-job').selectedIndex = 0;
-            switchTab('dashboard');
-            renderActiveMonitors();
+            renderLiveQueueAndMonitors();
         }
 
+        // FUNGSI UTAMA KETIKA TOMBOL "END TIME" DIKLIK -> DATA LANGSUNG DIHAPUS (GA MUNCUL LAGI)
         function selesaikanIzin(id) {
             const index = activePermits.findIndex(p => p.id === id);
             if (index !== -1) {
                 const p = activePermits[index];
+                // Jika dia pulangnya telat, datanya kita arsipkan ke laporan (Report) sebelum dihapus
                 if (p.status === 'Terlambat') {
                     const m = Math.floor(p.totalWaktuTelatDetik / 60);
                     const s = p.totalWaktuTelatDetik % 60;
@@ -447,125 +463,90 @@
                     setStorage('db_archived_reports', archivedReports);
                     renderReportTable();
                 }
+                
+                // HAPUS TOTAL DARI ANTRIAN AKTIF (GA AKAN MUNCUL LAGI)
                 activePermits.splice(index, 1);
                 setStorage('db_active_permits', activePermits);
-                renderActiveMonitors();
+                renderLiveQueueAndMonitors();
             }
         }
 
-        function renderActiveMonitors() {
-            const wrapper = document.getElementById('active-timers-wrapper');
+        // RENDER LIVE KARTU ANTRIAN DI ATAS FORMULIR
+        function renderLiveQueueAndMonitors() {
+            const container = document.getElementById('live-queue-container');
             const tbody = document.getElementById('monitor-table-body');
-            if(!wrapper || !tbody) return;
-            wrapper.innerHTML = ''; tbody.innerHTML = '';
+            const badgeCount = document.getElementById('active-count-badge');
+            
+            if(!container) return;
+            container.innerHTML = '';
+            if(tbody) tbody.innerHTML = '';
+
+            badgeCount.innerText = `${activePermits.length} Aktif`;
 
             if (activePermits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500 font-medium">Sistem Standby. Tidak ada personil di luar.</td></tr>`;
+                container.innerHTML = `
+                    <div id="empty-queue-msg" class="col-span-full py-6 text-center text-xs text-slate-500 font-medium bg-[#060b14]/50 border border-dashed border-slate-800 rounded-xl">
+                        <i class="fa-solid fa-mug-hot mr-1.5"></i> Seluruh staff berada di dalam ruangan / Standby.
+                    </div>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500 text-xs">Sistem Standby.</td></tr>`;
                 return;
             }
 
             activePermits.forEach(p => {
-                let sisaWaktuTeks = ""; let statusBadge = ""; let bgCardColor = "bg-luxury-dark border-slate-800";
-                
+                let sisaWaktuTeks = ""; 
+                let textStyle = "text-sky-400 text-glow-blue";
+                let cardBorder = "border-slate-800 bg-[#111e35]/60";
+
                 if (p.status === 'Berjalan') {
-                    const m = Math.floor(p.sisaDetik / 60); const s = p.sisaDetik % 60;
+                    const m = Math.floor(p.sisaDetik / 60);
+                    const s = p.sisaDetik % 60;
                     sisaWaktuTeks = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-                    statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1 w-fit"><span class="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block animate-ping"></span>Keluar</span>`;
-                    wrapper.innerHTML += `
-                        <div class="bg-gradient-to-r from-sky-950/40 to-slate-900/40 border border-sky-500/20 rounded-2xl p-4 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center"><i class="fa-solid fa-hourglass-start animate-spin"></i></div>
-                                <div><h5 class="text-xs font-bold text-slate-400 uppercase tracking-wide">${p.nama}</h5><p class="text-xs text-slate-500">Mulai Keluar: ${p.jamKeluar}</p></div>
-                            </div>
-                            <div class="text-right"><span class="text-2xl font-mono font-bold text-white text-glow-blue">${sisaWaktuTeks}</span></div>
-                        </div>`;
                 } else {
-                    const m = Math.floor(p.totalWaktuTelatDetik / 60); const s = p.totalWaktuTelatDetik % 60;
-                    sisaWaktuTeks = `Telat: ${m}m ${s}s`;
-                    statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/30 flex items-center gap-1 w-fit animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i>OVERTIME</span>`;
-                    bgCardColor = "bg-red-950/10 border-red-900/30";
-                    wrapper.innerHTML += `
-                        <div class="bg-gradient-to-r from-red-950/40 to-slate-900/40 border border-red-500/30 rounded-2xl p-4 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center"><i class="fa-solid fa-bell animate-bounce"></i></div>
-                                <div><h5 class="text-xs font-bold text-red-400 uppercase tracking-wide">${p.nama}</h5><p class="text-xs text-slate-400">🚨 Batas Waktu 15 Menit Habis!</p></div>
-                            </div>
-                            <div class="text-right"><span class="text-2xl font-mono font-bold text-red-500 text-glow-red">${sisaWaktuTeks}</span></div>
-                        </div>`;
+                    const m = Math.floor(p.totalWaktuTelatDetik / 60);
+                    const s = p.totalWaktuTelatDetik % 60;
+                    sisaWaktuTeks = `TELAT: ${m}m ${s}s`;
+                    textStyle = "text-red-500 text-glow-red animate-pulse";
+                    cardBorder = "border-red-900/40 bg-red-950/10";
                 }
 
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-900/20 ${bgCardColor}">
-                        <td class="px-6 py-4 font-semibold text-white">${p.nama}</td>
-                        <td class="px-6 py-4 text-slate-400">${p.jobdesk}</td>
-                        <td class="px-6 py-4 text-slate-500">${p.jamKeluar}</td>
-                        <td class="px-6 py-4 font-mono font-bold ${p.status === 'Terlambat' ? 'text-red-400' : 'text-sky-400'}">${sisaWaktuTeks}</td>
-                        <td class="px-6 py-4">${statusBadge}</td>
-                        <td class="px-6 py-4">
-                            <button onclick="selesaikanIzin(${p.id})" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold px-4 py-2 rounded-xl text-white transition">Kembali</button>
-                        </td>
-                    </tr>`;
+                // 1. Render Tampilan Kartu Atas (Mirip persis layout yang kamu minta)
+                container.innerHTML += `
+                    <div class="border ${cardBorder} rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                <h5 class="text-sm font-bold text-white uppercase tracking-wide">${p.nama}</h5>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">
+                                <i class="fa-solid fa-business-time mr-1 text-slate-500"></i> Keluar: <span class="text-slate-300 font-mono">${p.jamKeluar}</span> 
+                                <span class="mx-1 text-slate-600">|</span> Job: <span class="text-sky-400 font-medium">${p.jobdesk}</span>
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-slate-800/60 pt-2 sm:pt-0">
+                            <div class="text-xl font-mono font-bold ${textStyle}">${sisaWaktuTeks}</div>
+                            <button onclick="selesaikanIzin(${p.id})" class="bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1">
+                                <i class="fa-solid fa-hourglass-end"></i> End Time
+                            </button>
+                        </div>
+                    </div>`;
+
+                // 2. Sinkronisasi otomatis ke tabel Backup Monitor Utama (jika sedang dibuka)
+                if(tbody) {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-900/20">
+                            <td class="px-6 py-4 font-bold text-white">${p.nama}</td>
+                            <td class="px-6 py-4 text-slate-400">${p.jobdesk}</td>
+                            <td class="px-6 py-4 text-slate-500 font-mono">${p.jamKeluar}</td>
+                            <td class="px-6 py-4 font-mono font-bold ${p.status==='Terlambat'?'text-red-400':'text-sky-400'}">${sisaWaktuTeks}</td>
+                            <td class="px-6 py-4">
+                                <button onclick="selesaikanIzin(${p.id})" class="bg-slate-800 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg border border-slate-700">End</button>
+                            </td>
+                        </tr>`;
+                }
             });
         }
 
-        // REGISTRASI AKUN STAFF MANAGEMENT
-        function addStaffAccount(event) {
-            event.preventDefault();
-            const fnInput = document.getElementById('reg-staff-fullname').value.trim();
-            const uInput = document.getElementById('reg-staff-user').value.trim();
-            const pInput = document.getElementById('reg-staff-pass').value.trim();
-            const ipInput = document.getElementById('reg-staff-ip').value.trim();
-
-            if(uInput === 'gana') { alert('Username "gana" dilindungi sistem!'); return; }
-            if(staffAccounts.some(a => a.user === uInput)) { alert('Username sudah terpakai!'); return; }
-
-            staffAccounts.push({ fullname: fnInput, user: uInput, pass: pInput, ip: ipInput });
-            setStorage('db_staff_accounts', staffAccounts);
-            
-            document.getElementById('reg-staff-fullname').value = '';
-            document.getElementById('reg-staff-user').value = '';
-            document.getElementById('reg-staff-pass').value = '';
-            document.getElementById('reg-staff-ip').value = '';
-            
-            alert(`Akun Staff untuk ${fnInput} berhasil dibuat.`);
-            initDropdownsAndLists();
-        }
-
-        function removeStaffAccount(idx) {
-            if(confirm('Hapus akun staff ini?')) {
-                staffAccounts.splice(idx, 1);
-                setStorage('db_staff_accounts', staffAccounts);
-                initDropdownsAndLists();
-            }
-        }
-
-        function initDropdownsAndLists() {
-            const selectJob = document.getElementById('form-select-job');
-            selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
-            masterJobs.forEach(j => selectJob.innerHTML += `<option value="${j}">${j}</option>`);
-
-            const ulJobs = document.getElementById('list-master-jobs');
-            ulJobs.innerHTML = '';
-            masterJobs.forEach((j, i) => {
-                ulJobs.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${j} <button onclick="removeMasterData('job', ${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
-            });
-
-            const tbodyStaff = document.getElementById('list-staff-accounts');
-            tbodyStaff.innerHTML = '';
-            staffAccounts.forEach((acc, i) => {
-                tbodyStaff.innerHTML += `
-                    <tr class="hover:bg-slate-900/40">
-                        <td class="py-2 font-semibold text-white">${acc.fullname}</td>
-                        <td class="py-2 font-mono text-emerald-400">${acc.user}</td>
-                        <td class="py-2 font-mono">•••••• (${acc.pass})</td>
-                        <td class="py-2 text-slate-400 font-mono">${acc.ip}</td>
-                        <td class="py-2 text-right">
-                            <button onclick="removeStaffAccount(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-user-minus"></i> Hapus</button>
-                        </td>
-                    </tr>`;
-            });
-        }
-
+        // LOG DATA OVERTIME TAB
         function renderReportTable(filterDate = '') {
             const tbody = document.getElementById('report-table-body');
             if(!tbody) return; tbody.innerHTML = '';
@@ -576,13 +557,13 @@
             }
             filtered.forEach(r => {
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-900/30 border-b border-slate-800/40">
+                    <tr class="hover:bg-slate-900/30">
                         <td class="px-6 py-4 text-xs text-slate-400">${r.tanggal}</td>
                         <td class="px-6 py-4 font-bold text-white">${r.nama}</td>
                         <td class="px-6 py-4 text-slate-400">${r.jobdesk}</td>
-                        <td class="px-6 py-4 text-slate-500">${r.jamKeluar}</td>
-                        <td class="px-6 py-4 font-semibold text-red-400">${r.telat}</td>
-                        <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-xs border border-red-500/10">Terdata Telat</span></td>
+                        <td class="px-6 py-4 text-slate-500 font-mono">${r.jamKeluar}</td>
+                        <td class="px-6 py-4 font-semibold text-red-400 font-mono">${r.telat}</td>
+                        <td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-xs border border-red-500/10">Overtime</span></td>
                     </tr>`;
             });
         }
@@ -590,20 +571,54 @@
         function filterReportByDate() { renderReportTable(document.getElementById('filter-date-input').value); }
         function clearDateFilter() { document.getElementById('filter-date-input').value = ''; renderReportTable(); }
 
+        // SETTINGS & MASTER MANAGEMENT
+        function addStaffAccount(event) {
+            event.preventDefault();
+            const fn = document.getElementById('reg-staff-fullname').value.trim();
+            const u = document.getElementById('reg-staff-user').value.trim();
+            const p = document.getElementById('reg-staff-pass').value.trim();
+            const ip = document.getElementById('reg-staff-ip').value.trim();
+            if(u === 'gana' || staffAccounts.some(a => a.user === u)) { alert('Username tidak valid!'); return; }
+            staffAccounts.push({ fullname: fn, user: u, pass: p, ip: ip });
+            setStorage('db_staff_accounts', staffAccounts);
+            event.target.reset(); initDropdownsAndLists();
+        }
+        function removeStaffAccount(idx) {
+            if(confirm('Hapus akun staff ini?')) { staffAccounts.splice(idx, 1); setStorage('db_staff_accounts', staffAccounts); initDropdownsAndLists(); }
+        }
         function addJobdeskMaster(event) {
             event.preventDefault(); const input = document.getElementById('input-master-job'); const val = input.value.trim();
-            if(masterJobs.includes(val)) return; masterJobs.push(val); setStorage('db_master_jobs', masterJobs);
+            if(!masterJobs.includes(val)) { masterJobs.push(val); setStorage('db_master_jobs', masterJobs); }
             input.value = ''; initDropdownsAndLists();
         }
-        function removeMasterData(type, idx) {
-            if (confirm('Hapus data master?')) {
-                if (type === 'job') { masterJobs.splice(idx, 1); setStorage('db_master_jobs', masterJobs); }
-                initDropdownsAndLists();
-            }
+        function removeMasterData(idx) {
+            if (confirm('Hapus jobdesk ini?')) { masterJobs.splice(idx, 1); setStorage('db_master_jobs', masterJobs); initDropdownsAndLists(); }
         }
 
-        const ops = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-time-display').innerText = new Date().toLocaleDateString('id-ID', ops);
+        function initDropdownsAndLists() {
+            const selectJob = document.getElementById('form-select-job');
+            selectJob.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Jobdesk --</option>';
+            masterJobs.forEach(j => selectJob.innerHTML += `<option value="${j}">${j}</option>`);
+
+            const ulJobs = document.getElementById('list-master-jobs'); ulJobs.innerHTML = '';
+            masterJobs.forEach((j, i) => {
+                ulJobs.innerHTML += `<li class="py-2 flex justify-between items-center text-slate-300">${j} <button onclick="removeMasterData(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-regular fa-trash-can"></i></button></li>`;
+            });
+
+            const tbodyStaff = document.getElementById('list-staff-accounts'); tbodyStaff.innerHTML = '';
+            staffAccounts.forEach((acc, i) => {
+                tbodyStaff.innerHTML += `
+                    <tr class="hover:bg-slate-900/40">
+                        <td class="py-2 font-semibold text-white">${acc.fullname}</td>
+                        <td class="py-2 font-mono text-emerald-400">${acc.user}</td>
+                        <td class="py-2 font-mono">•••••• (${acc.pass})</td>
+                        <td class="py-2 text-slate-400 font-mono">${acc.ip}</td>
+                        <td class="py-2 text-right"><button onclick="removeStaffAccount(${i})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-user-minus"></i></button></td>
+                    </tr>`;
+            });
+        }
+
+        document.getElementById('current-time-display').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     </script>
 </body>
 </html>
