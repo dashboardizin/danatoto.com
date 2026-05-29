@@ -123,8 +123,20 @@
                 </div>
             </header>
 
-            <div class="flex-1 p-8 overflow-y-auto space-y-6">
+<main class="flex-1 overflow-y-auto p-8">
+    
+    <div id="timer-display" class="bg-orange-200 border border-orange-300 p-6 rounded-xl mb-8 text-center">
+        </div>
 
+    <section id="tab-dashboard" class="space-y-6">
+        ...
+    </section>
+
+    <section id="tab-izin" class="hidden space-y-6">
+        ...
+    </section>
+
+</main>
                 <section id="tab-dashboard" class="space-y-6">
                     <div class="bg-luxury-dark/40 border border-slate-800/80 rounded-2xl p-6">
                         <div class="flex justify-between items-center mb-4">
@@ -641,5 +653,22 @@
             });
         }
     </script>
+    // 1. Fungsi switchTab yang sudah ada
+    function switchTab(tabName) {
+        // ... kode switchTab kamu ...
+    }
+
+    // 2. LETAKKAN FUNCTION TRIGGER START TIME DI SINI (Contoh baris 200+)
+    function triggerStartTime() {
+        console.log("StartTime diklik");
+        // Logika kamu di sini
+        // Pastikan TIDAK ADA panggil switchTab('dashboard') di sini
+    }
+
+    // 3. Fungsi lainnya
+    function triggerEndTime() {
+        // Logika kamu di sini
+    }
+</script>
 </body>
 </html>
