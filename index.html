@@ -124,18 +124,12 @@
             </header>
 
 <main class="flex-1 overflow-y-auto p-8">
-    
-    <div id="timer-display" class="bg-orange-200 border border-orange-300 p-6 rounded-xl mb-8 text-center">
-        </div>
-
-    <section id="tab-dashboard" class="space-y-6">
+    <div id="timer-display" class="...">
         ...
-    </section>
+    </div>
 
-    <section id="tab-izin" class="hidden space-y-6">
-        ...
-    </section>
-
+    <section id="tab-dashboard">...</section>
+    <section id="tab-izin">...</section>
 </main>
                 <section id="tab-dashboard" class="space-y-6">
                     <div class="bg-luxury-dark/40 border border-slate-800/80 rounded-2xl p-6">
@@ -652,23 +646,49 @@
                 }
             });
         }
-    </script>
-    // 1. Fungsi switchTab yang sudah ada
-    function switchTab(tabName) {
-        // ... kode switchTab kamu ...
-    }
+    <script>
+        // 1. Fungsi switchTab yang sudah ada
+        function switchTab(tabName) {
+            // Pastikan kode switchTab kamu ada di sini
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+        }
 
-    // 2. LETAKKAN FUNCTION TRIGGER START TIME DI SINI (Contoh baris 200+)
-    function triggerStartTime() {
-        console.log("StartTime diklik");
-        // Logika kamu di sini
-        // Pastikan TIDAK ADA panggil switchTab('dashboard') di sini
-    }
+        // 2. FUNGSI START TIME (Tanpa switchTab)
+        function triggerStartTime() {
+            console.log("StartTime diklik");
+            // Tambahkan logika untuk mulai timer di sini
+            alert("Waktu dimulai!");
+            renderLiveQueueAndMonitors(); 
+        }
 
-    // 3. Fungsi lainnya
-    function triggerEndTime() {
-        // Logika kamu di sini
-    }
-</script>
+        // 3. FUNGSI END TIME (Tanpa switchTab)
+        function triggerEndTime() {
+            console.log("EndTime diklik");
+            // Tambahkan logika untuk berhenti timer di sini
+            alert("Waktu dihentikan!");
+            renderLiveQueueAndMonitors();
+        }
+
+        // 4. FUNGSI LAINNYA (Pastikan semua fungsi ada di dalam satu blok <script> ini)
+        function deleteJobdeskMaster(idx) {
+            masterJobs.splice(idx, 1);
+            setStorage('db_master_jobs', masterJobs);
+            initDropdownsAndLists();
+        }
+
+        function addStaffAccount(e) {
+            e.preventDefault();
+            // ... (kode addStaffAccount kamu) ...
+            initDropdownsAndLists();
+        }
+
+        // ... (masukkan semua fungsi deleteStaffAccount, renderReportTable, dll di sini) ...
+
+        function renderLiveQueueAndMonitors() {
+            // ... (kode renderLiveQueueAndMonitors kamu) ...
+        }
+
+    </script> 
 </body>
 </html>
