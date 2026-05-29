@@ -122,15 +122,6 @@
                     </div>
                 </div>
             </header>
-
-<main class="flex-1 overflow-y-auto p-8">
-    <div id="timer-display" class="...">
-        ...
-    </div>
-
-    <section id="tab-dashboard">...</section>
-    <section id="tab-izin">...</section>
-</main>
                 <section id="tab-dashboard" class="space-y-6">
                     <div class="bg-luxury-dark/40 border border-slate-800/80 rounded-2xl p-6">
                         <div class="flex justify-between items-center mb-4">
@@ -689,6 +680,57 @@
             // ... (kode renderLiveQueueAndMonitors kamu) ...
         }
 
+<main class="flex-1 overflow-y-auto p-8">
+        <div id="timer-display" class="bg-orange-200 border border-orange-300 p-6 rounded-xl mb-8 text-center">
+            <div id="countdown" class="text-4xl font-black text-orange-900">00:00</div>
+        </div>
+
+        <section id="tab-dashboard" class="space-y-6">
+            </section>
+
+        <section id="tab-izin" class="hidden space-y-6">
+            </section>
+    </main>
+
+    <script>
+        // FUNGSI NAVIGASI
+        function switchTab(tabName) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+        }
+
+        // FUNGSI START TIME (DIPERBAIKI: TIDAK PINDAH TAB)
+        function triggerStartTime() {
+            document.getElementById('countdown').innerText = "15:00";
+            alert("Waktu dimulai!");
+            // Tidak ada switchTab('dashboard') di sini!
+        }
+
+        // FUNGSI END TIME (DIPERBAIKI: TIDAK PINDAH TAB)
+        function triggerEndTime() {
+            document.getElementById('countdown').innerText = "00:00";
+            alert("Waktu dihentikan!");
+        }
+
+        // MASUKKAN SEMUA FUNGSI LAINNYA DI SINI (CONTOH)
+        function deleteJobdeskMaster(idx) {
+            masterJobs.splice(idx, 1);
+            setStorage('db_master_jobs', masterJobs);
+            initDropdownsAndLists();
+        }
+
+        function addStaffAccount(e) {
+            e.preventDefault();
+            // ... (kode add staff kamu)
+            initDropdownsAndLists();
+        }
+
+        function renderLiveQueueAndMonitors() {
+            // ... (kode render kamu)
+        }
+
     </script> 
+</body>
+</html>
 </body>
 </html>
